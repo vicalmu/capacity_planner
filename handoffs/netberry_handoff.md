@@ -35,7 +35,7 @@ main.js              # Inicializador + debug tools
 1. **Sistema entrada manual datos** (formularios CRUD personas/proyectos)
 2. **Base de datos** (persistencia - arquitectura ya preparada)
 3. **Reportes PDF** (presentaciones director general)
-4. **Vista calendario Gantt** (timeline avanzado)
+4. **Llevar Simulador de proyectos a un popup** (no me gusta ahi abajo)
 
 ## 💾 DATOS & PERSISTENCIA
 - **NO localStorage/sessionStorage** (servidor corporativo)
