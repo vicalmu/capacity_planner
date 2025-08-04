@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capacity Planning - Netberry Enhanced</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles2.css">
+    <link rel="stylesheet" href="css/styles3.css">
+    <link rel="stylesheet" href="css/styles4.css">
+    <link rel="stylesheet" href="css/styles5.css">
+    <link rel="stylesheet" href="css/styles6.css">
 </head>
 <body>
     <div class="header">
@@ -31,6 +36,30 @@
     </div>
     
     <div class="dashboard">
+        <!-- Gantt Chart - NUEVO -->
+        <div class="chart-container gantt-container">
+            <div class="chart-header">
+                <div class="chart-title" id="ganttChartTitle">
+                    📅 Gantt de Proyectos Anuales
+                </div>
+                <div class="gantt-controls">
+                    <label class="year-label">Año:</label>
+                    <select class="year-selector-gantt" id="ganttYearSelector">
+                        <option value="2024">2024</option>
+                        <option value="2025" selected>2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+            </div>
+            <div class="gantt-chart" id="ganttChart">
+                <!-- El Gantt se genera dinámicamente -->
+            </div>
+            <div class="gantt-legend" id="ganttLegend">
+                <!-- La leyenda se genera dinámicamente -->
+            </div>
+        </div>
+
         <!-- KPI Cards -->
         <div class="kpi-grid" id="kpiGrid">
             <!-- Los KPIs se cargan dinámicamente -->
@@ -143,12 +172,64 @@
         </div>
     </div>
 
+    <!-- Modal de Detalles de Proyecto -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="NetberryComponents.gantt.closeProjectModal()">&times;</span>
+                <h2 id="projectModalTitle">Detalles del Proyecto</h2>
+                <p id="projectModalSubtitle">Información completa del proyecto seleccionado</p>
+            </div>
+            <div class="modal-body">
+                <div id="projectModalContent">
+                    <!-- Contenido del proyecto se genera dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts modulares -->
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/components.js"></script>
-    <script src="js/modal.js"></script>
+    <!-- Módulos especializados -->
+    <script src="js/gantt/gantt-chart.js"></script>
+    <script src="js/simulator/simulator-domino.js"></script>
+    
+    <!-- Coordinador principal -->
+    <script src="js/components-main.js"></script>
+    <!--<script src="js/modal.js"></script>
     <script src="js/simulator.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js"></script>-->
+
+
+   <!-- Core Components -->
+<!--<script src="js/core/kpis.js"></script>
+<script src="js/core/filters.js"></script>
+<script src="js/core/departments.js"></script>
+<script src="js/core/projects.js"></script>
+<script src="js/core/timeline.js"></script>
+
+<!-- Gantt Components -->
+<!--<script src="js/gantt/gantt-utils.js"></script>
+<script src="js/gantt/gantt-chart.js"></script>
+
+<!-- Simulator Components -->
+<!--<script src="js/simulator/simulator-calculations.js"></script>
+<script src="js/simulator/simulator-steps.js"></script>
+<script src="js/simulator/simulator-domino.js"></script>
+<script src="js/simulator/simulator-core.js"></script>
+
+<!-- Main Coordinator -->
+<!--<script src="js/components-main.js"></script>-->
+
+<script>
+// Auto-inicializar el dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        NetberryComponents.init();
+    }, 100);
+});
+</script>
+
 </body>
 </html>

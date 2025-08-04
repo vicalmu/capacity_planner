@@ -35,7 +35,8 @@ const NetberryData = {
         currentYear: 2025,
         currentQuarter: 'Q3 2025',
         timelineView: 'annual', // ← NUEVA: Vista por defecto anual
-        selectedYear: 2025 // ← AGREGAR ESTA LÍNEA
+        selectedYear: 2025,
+        ganttYear: 2025 // ← NUEVO: Año seleccionado en Gantt
     },
 
     // Departamentos con capacidades recalculadas basadas en 1800h/persona/año
@@ -150,14 +151,152 @@ const NetberryData = {
         }
     },
 
-    // Proyectos activos
+    // PROYECTOS EXTENDIDOS PARA GANTT - CON FECHAS Y DEPARTAMENTOS
     projects: [
-        { name: 'E-commerce Renovación', end: 'Nov 2025', progress: formatNumber.decimal(74.8), departments: ['php', 'ux'], hours: 450 },
-        { name: 'App Mobile Banking', end: 'Dic 2025', progress: formatNumber.decimal(59.7), departments: ['movilidad', 'devops'], hours: 680 },
-        { name: 'API Microservicios', end: 'Feb 2026', progress: formatNumber.decimal(39.4), departments: ['dotnet', 'qa'], hours: 520 },
-        { name: 'Portal Corporativo', end: 'Mar 2026', progress: formatNumber.decimal(24.8), departments: ['php', 'marketing'], hours: 380 },
-        { name: 'Sistema Facturación', end: 'Ene 2026', progress: formatNumber.decimal(54.3), departments: ['php', 'dotnet'], hours: 420 },
-        { name: 'Cloud Migration', end: 'Abr 2026', progress: formatNumber.decimal(29.6), departments: ['devops', 'dotnet'], hours: 890 }
+        {
+            id: 1,
+            name: 'E-commerce Renovación',
+            startDate: '2025-01-15',
+            endDate: '2025-11-30',
+            progress: formatNumber.decimal(74.8),
+            departments: ['php', 'ux'],
+            hours: 450,
+            priority: 'high',
+            status: 'active',
+            description: 'Renovación completa de la plataforma e-commerce con nuevas funcionalidades y mejora de UX'
+        },
+        {
+            id: 2,
+            name: 'App Mobile Banking',
+            startDate: '2025-03-20',
+            endDate: '2025-12-15',
+            progress: formatNumber.decimal(59.7),
+            departments: ['movilidad', 'devops'],
+            hours: 680,
+            priority: 'critical',
+            status: 'active',
+            description: 'Desarrollo de aplicación móvil para banca digital con funcionalidades avanzadas'
+        },
+        {
+            id: 3,
+            name: 'API Microservicios',
+            startDate: '2025-02-01',
+            endDate: '2026-02-28',
+            progress: formatNumber.decimal(39.4),
+            departments: ['dotnet', 'qa'],
+            hours: 520,
+            priority: 'high',
+            status: 'active',
+            description: 'Migración a arquitectura de microservicios para mejorar escalabilidad'
+        },
+        {
+            id: 4,
+            name: 'Portal Corporativo',
+            startDate: '2025-03-10',
+            endDate: '2026-03-15',
+            progress: formatNumber.decimal(24.8),
+            departments: ['php', 'marketing'],
+            hours: 380,
+            priority: 'medium',
+            status: 'active',
+            description: 'Desarrollo de portal corporativo para gestión interna'
+        },
+        {
+            id: 5,
+            name: 'Sistema Facturación',
+            startDate: '2025-01-05',
+            endDate: '2026-01-30',
+            progress: formatNumber.decimal(54.3),
+            departments: ['php', 'dotnet'],
+            hours: 420,
+            priority: 'high',
+            status: 'active',
+            description: 'Sistema integrado de facturación automática'
+        },
+        {
+            id: 6,
+            name: 'Cloud Migration',
+            startDate: '2025-04-01',
+            endDate: '2026-04-30',
+            progress: formatNumber.decimal(29.6),
+            departments: ['devops', 'dotnet'],
+            hours: 890,
+            priority: 'critical',
+            status: 'active',
+            description: 'Migración completa de infraestructura a la nube'
+        },
+        {
+            id: 7,
+            name: 'API REST v2',
+            startDate: '2025-02-10',
+            endDate: '2025-08-15',
+            progress: formatNumber.decimal(65.2),
+            departments: ['php'],
+            hours: 320,
+            priority: 'medium',
+            status: 'active',
+            description: 'Nueva versión de API REST con mejoras de performance'
+        },
+        {
+            id: 8,
+            name: 'CI/CD Pipeline',
+            startDate: '2025-01-01',
+            endDate: '2025-12-31',
+            progress: formatNumber.decimal(78.4),
+            departments: ['devops'],
+            hours: 560,
+            priority: 'high',
+            status: 'active',
+            description: 'Implementación de pipeline completo CI/CD'
+        },
+        {
+            id: 9,
+            name: 'Kubernetes Setup',
+            startDate: '2025-04-15',
+            endDate: '2025-10-30',
+            progress: formatNumber.decimal(35.1),
+            departments: ['devops'],
+            hours: 450,
+            priority: 'high',
+            status: 'active',
+            description: 'Configuración y deployment de cluster Kubernetes'
+        },
+        {
+            id: 10,
+            name: 'App Retail',
+            startDate: '2025-10-01',
+            endDate: '2026-06-30',
+            progress: formatNumber.decimal(12.8),
+            departments: ['movilidad'],
+            hours: 380,
+            priority: 'medium',
+            status: 'active',
+            description: 'Aplicación móvil para sector retail'
+        },
+        {
+            id: 11,
+            name: 'Design System',
+            startDate: '2025-01-10',
+            endDate: '2025-07-15',
+            progress: formatNumber.decimal(82.5),
+            departments: ['ux'],
+            hours: 280,
+            priority: 'medium',
+            status: 'active',
+            description: 'Sistema de diseño unificado para todos los productos'
+        },
+        {
+            id: 12,
+            name: 'User Research',
+            startDate: '2025-04-01',
+            endDate: '2025-12-31',
+            progress: formatNumber.decimal(45.7),
+            departments: ['ux'],
+            hours: 200,
+            priority: 'low',
+            status: 'active',
+            description: 'Investigación de usuarios y análisis de comportamiento'
+        }
     ],
 
     // Métodos de cálculo con formato aplicado
@@ -215,6 +354,56 @@ const NetberryData = {
             if (!departments) departments = Object.values(NetberryData.departments);
             const totalPeople = departments.reduce((sum, dept) => sum + dept.people.length, 0);
             return totalPeople * NetberryData.config.quarterlyHoursPerPerson;
+        },
+
+        // NUEVO: Obtener proyectos por año
+        getProjectsByYear: (year) => {
+            return NetberryData.projects.filter(project => {
+                const startYear = parseInt(project.startDate.split('-')[0]);
+                const endYear = parseInt(project.endDate.split('-')[0]);
+                return startYear <= year && endYear >= year;
+            });
+        },
+
+        // NUEVO: Obtener proyectos por departamento y año
+        getProjectsByDepartmentAndYear: (deptKey, year) => {
+            const yearProjects = NetberryData.calculations.getProjectsByYear(year);
+            return yearProjects.filter(project => 
+                project.departments.includes(deptKey)
+            );
+        },
+
+        // NUEVO: Calcular posición de proyecto en timeline (mes inicio y duración)
+        getProjectTimelinePosition: (project, year) => {
+            const projectStart = new Date(project.startDate);
+            const projectEnd = new Date(project.endDate);
+            const yearStart = new Date(year, 0, 1);
+            const yearEnd = new Date(year, 11, 31);
+
+            // Si el proyecto no intersecta con el año, retornar null
+            if (projectEnd < yearStart || projectStart > yearEnd) {
+                return null;
+            }
+
+            // Calcular mes de inicio (limitado al año actual)
+            const startMonth = Math.max(0, projectStart.getMonth() - (projectStart.getFullYear() - year) * 12);
+            
+            // Calcular mes de fin (limitado al año actual)
+            const endMonth = Math.min(11, projectEnd.getMonth() + (year - projectEnd.getFullYear()) * 12);
+            
+            // Si el proyecto empieza antes del año, empezar en enero
+            const displayStartMonth = projectStart.getFullYear() < year ? 0 : startMonth;
+            
+            // Si el proyecto termina después del año, terminar en diciembre
+            const displayEndMonth = projectEnd.getFullYear() > year ? 11 : endMonth;
+
+            return {
+                startMonth: displayStartMonth,
+                endMonth: displayEndMonth,
+                duration: displayEndMonth - displayStartMonth + 1,
+                startsBeforeYear: projectStart.getFullYear() < year,
+                endsAfterYear: projectEnd.getFullYear() > year
+            };
         },
 
         simulateProjectImpact: (requirements) => {

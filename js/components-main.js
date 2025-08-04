@@ -1,8 +1,8 @@
-// components.js - Componentes de interfaz modulares
+// js/components-main.js - Coordinador Principal de Componentes
 
 const NetberryComponents = {
     
-    // Componente de KPIs
+    // Componente de KPIs (mantenido en este archivo por simplicidad)
     kpis: {
         render: function() {
             const container = document.getElementById('kpiGrid');
@@ -120,7 +120,23 @@ const NetberryComponents = {
         }
     },
 
-    // Componente de filtros
+    // Delegar al componente Gantt externo
+    gantt: {
+        render: function() {
+            if (typeof GanttChart !== 'undefined') {
+                GanttChart.render();
+            } else {
+                console.warn('GanttChart no está disponible');
+            }
+        },
+        update: function() {
+            if (typeof GanttChart !== 'undefined') {
+                GanttChart.update();
+            }
+        }
+    },
+
+    // Componente de filtros (simplificado)
     filters: {
         render: function() {
             const container = document.getElementById('filterButtons');
@@ -191,6 +207,7 @@ const NetberryComponents = {
             NetberryComponents.departments.filter();
             NetberryComponents.projects.filter();
             NetberryComponents.timeline.update();
+            NetberryComponents.gantt.update();
         },
 
         clearAll: function() {
@@ -201,7 +218,7 @@ const NetberryComponents = {
         }
     },
 
-    // Componente de departamentos
+    // Componente de departamentos (simplificado)
     departments: {
         render: function() {
             const container = document.getElementById('departmentGrid');
@@ -240,199 +257,111 @@ const NetberryComponents = {
         }
     },
 
-    // Componente de timeline ACTUALIZADO con vista anual/trimestral
-    timeline: {
-        render: function() {
-            const container = document.getElementById('capacityTimeline');
-            if (!container) return;
+timeline: {
+    render: function() {
+        const container = document.getElementById('capacityTimeline');
+        if (!container) return;
 
-            // Obtener departamentos filtrados
-            const filteredDepartments = NetberryData.calculations.getFilteredDepartments(NetberryUtils.activeFilters);
-            
-            // Generar datos según vista actual
-            const timelineData = NetberryData.config.timelineView === 'annual' 
-                ? this.generateAnnualData(filteredDepartments)
-                : this.generateQuarterlyData(filteredDepartments);
+        // Obtener departamentos filtrados
+        const filteredDepartments = NetberryData.calculations.getFilteredDepartments(NetberryUtils.activeFilters);
+        
+        // Generar datos según vista actual
+        const timelineData = NetberryData.config.timelineView === 'annual' 
+            ? this.generateAnnualData(filteredDepartments)
+            : this.generateQuarterlyData(filteredDepartments);
 
-            // Actualizar título del gráfico
-            this.updateChartTitle();
-
-            container.innerHTML = timelineData.map(period => `
-                <div class="timeline-row">
-                    <div class="timeline-label">${period.label}</div>
-                    <div class="timeline-bar">
-                        <div class="bar-segment committed" 
-                             style="width: ${period.committed}%;"
-                             title="Comprometido: ${period.committed}% (${formatNumber.hours(period.committedHours)})">
-                            ${period.committed}%
-                        </div>
-                        <div class="bar-segment buffer" 
-                             style="width: ${period.buffer}%;"
-                             title="Buffer: ${period.buffer}% (${formatNumber.hours(period.bufferHours)})">
-                            Buffer
-                        </div>
-                        <div class="bar-segment available" 
-                             style="width: ${period.available}%;"
-                             title="Disponible: ${period.available}% (${formatNumber.hours(period.availableHours)})">
-                            ${period.available}%
-                        </div>
+        container.innerHTML = timelineData.map(period => `
+            <div class="timeline-row">
+                <div class="timeline-label">${period.label}</div>
+                <div class="timeline-bar">
+                    <div class="bar-segment committed" 
+                         style="width: ${period.committed}%;"
+                         title="Comprometido: ${period.committed}%">
+                        ${period.committed}%
                     </div>
-                    <div class="timeline-total">
-                        ${formatNumber.hours(period.total)}
-                        <div class="timeline-subtitle">${period.departments} dept${period.departments !== 1 ? 's' : ''}</div>
+                    <div class="bar-segment buffer" 
+                         style="width: ${period.buffer}%;"
+                         title="Buffer: ${period.buffer}%">
+                        Buffer
+                    </div>
+                    <div class="bar-segment available" 
+                         style="width: ${period.available}%;"
+                         title="Disponible: ${period.available}%">
+                        ${period.available}%
                     </div>
                 </div>
-            `).join('');
+                <div class="timeline-total">${formatNumber.hours(period.total)}</div>
+            </div>
+        `).join('');
 
-            // Configurar eventos del toggle
-            this.bindToggleEvents();
-        },
-
-        // NUEVO: Generar datos anuales
-        generateAnnualData: function(filteredDepartments) {
-            const totalCapacity = NetberryData.calculations.getTotalAnnualCapacity(filteredDepartments);
-            
-            const years = [
-                { label: '2025', baseCommitted: 78, trend: 0 },
-                { label: '2026', baseCommitted: 65, trend: -13 },
-                { label: '2027', baseCommitted: 58, trend: -20 },
-                { label: '2028', baseCommitted: 52, trend: -26 }
-            ];
-
-            return this.calculatePeriodData(years, filteredDepartments, totalCapacity);
-        },
-
-        // NUEVO: Generar datos trimestrales con orden correcto Q1→Q2→Q3→Q4
-        generateQuarterlyData: function(filteredDepartments) {
-            const totalCapacity = NetberryData.calculations.getTotalQuarterlyCapacity(filteredDepartments);
-            const selectedYear = NetberryData.config.selectedYear;
-            
-            const quarters = [
-                { label: `Q1 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 72 : 58, trend: selectedYear === 2025 ? 4 : -10 },
-                { label: `Q2 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 75 : 45, trend: selectedYear === 2025 ? 7 : -23 },
-                { label: `Q3 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 68 : 52, trend: selectedYear === 2025 ? 0 : -16 },
-                { label: `Q4 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 70 : 48, trend: selectedYear === 2025 ? 2 : -20 }
-            ];
-
-            return this.calculatePeriodData(quarters, filteredDepartments, totalCapacity);
-        },
-
-        // NUEVO: Método común para calcular datos de períodos
-        calculatePeriodData: function(periods, filteredDepartments, totalCapacity) {
-            return periods.map(period => {
-                // Calcular utilización promedio de los departamentos filtrados
-                const avgUtilization = NetberryData.calculations.getAverageUtilization(filteredDepartments);
-                
-                // Ajustar porcentajes basados en utilización actual y tendencia del período
-                let committed = formatNumber.decimal(avgUtilization + period.trend);
-                committed = Math.max(0, Math.min(100, committed)); // Mantener entre 0-100%
-                
-                const buffer = 15; // Buffer fijo del 15%
-                let available = formatNumber.decimal(100 - committed - buffer);
-                available = Math.max(0, available); // No puede ser negativo
-                
-                // Ajustar committed si excede 85% (límite recomendado)
-                if (committed + buffer > 85) {
-                    committed = Math.max(0, 85 - buffer);
-                    available = formatNumber.decimal(100 - committed - buffer);
-                }
-
-                // Calcular horas absolutas
-                const committedHours = formatNumber.decimal((committed / 100) * totalCapacity);
-                const bufferHours = formatNumber.decimal((buffer / 100) * totalCapacity);
-                const availableHours = formatNumber.decimal((available / 100) * totalCapacity);
-
-                return {
-                    label: period.label,
-                    committed: formatNumber.decimal(committed),
-                    buffer: formatNumber.decimal(buffer),
-                    available: formatNumber.decimal(available),
-                    total: totalCapacity,
-                    committedHours,
-                    bufferHours,
-                    availableHours,
-                    departments: filteredDepartments.length
-                };
-            });
-        },
-
-        // NUEVO: Configurar eventos del toggle anual/trimestral
-        bindToggleEvents: function() {
-            document.querySelectorAll('.toggle-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const view = btn.getAttribute('data-view');
-                    this.switchView(view);
-                });
-            });
-            
-            // Event listener para selector de año
-            const yearSelector = document.getElementById('yearSelector');
-            if (yearSelector) {
-                yearSelector.addEventListener('change', (e) => {
-                    NetberryData.config.selectedYear = parseInt(e.target.value);
-                    this.render();
-                    NetberryComponents.kpis.update();
-                });
-            }
-        },
-
-        // NUEVO: Cambiar entre vista anual y trimestral
-        switchView: function(view) {
-            NetberryData.config.timelineView = view;
-            
-            // Actualizar botones activos
-            document.querySelectorAll('.toggle-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-view="${view}"]`).classList.add('active');
-            
-            // Mostrar/ocultar selector de año
-            const yearSelector = document.getElementById('yearSelector');
-            if (yearSelector) {
-                if (view === 'quarterly') {
-                    yearSelector.style.display = 'inline-block';
-                    yearSelector.value = NetberryData.config.selectedYear;
-                } else {
-                    yearSelector.style.display = 'none';
-                }
-            }
-            
-            // Re-renderizar timeline
-            this.render();
-            
-            // Actualizar KPIs para reflejar el nuevo período
-            NetberryComponents.kpis.update();
-        },
-
-        // NUEVO: Actualizar título del gráfico según vista
-        updateChartTitle: function() {
-            const titleElement = document.querySelector('.chart-title');
-            if (titleElement) {
-                const isAnnual = NetberryData.config.timelineView === 'annual';
-                titleElement.textContent = `📊 Proyección de Capacidad ${isAnnual ? 'Anual' : 'Trimestral'}`;
-            }
-        },
-
-        // Método para actualizar el timeline cuando cambian los filtros
-        update: function() {
-            this.render();
-            
-            // Animar actualización
-            const timelineRows = document.querySelectorAll('.timeline-row');
-            timelineRows.forEach((row, index) => {
-                row.style.opacity = '0.7';
-                row.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    row.style.transition = 'all 0.3s ease';
-                    row.style.opacity = '1';
-                    row.style.transform = 'scale(1)';
-                }, index * 50);
-            });
-        }
+        // Configurar eventos del toggle
+        this.bindToggleEvents();
     },
 
-    // Componente de proyectos
+    generateAnnualData: function(filteredDepartments) {
+        const totalCapacity = NetberryData.calculations.getTotalCapacity(filteredDepartments);
+        
+        const years = [
+            { label: '2025', committed: 78, buffer: 15, available: 7 },
+            { label: '2026', committed: 65, buffer: 15, available: 20 },
+            { label: '2027', committed: 58, buffer: 15, available: 27 },
+            { label: '2028', committed: 52, buffer: 15, available: 33 }
+        ];
+
+        return years.map(year => ({
+            ...year,
+            total: totalCapacity
+        }));
+    },
+
+    generateQuarterlyData: function(filteredDepartments) {
+        const totalCapacity = NetberryData.calculations.getTotalCapacity(filteredDepartments) / 4;
+        const selectedYear = NetberryData.config.selectedYear || 2025;
+        
+        const quarters = [
+            { label: `Q1 ${selectedYear}`, committed: 72, buffer: 15, available: 13 },
+            { label: `Q2 ${selectedYear}`, committed: 75, buffer: 15, available: 10 },
+            { label: `Q3 ${selectedYear}`, committed: 68, buffer: 15, available: 17 },
+            { label: `Q4 ${selectedYear}`, committed: 70, buffer: 15, available: 15 }
+        ];
+
+        return quarters.map(quarter => ({
+            ...quarter,
+            total: totalCapacity
+        }));
+    },
+
+    bindToggleEvents: function() {
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = btn.getAttribute('data-view');
+                this.switchView(view);
+            });
+        });
+    },
+
+    switchView: function(view) {
+        NetberryData.config.timelineView = view;
+        
+        // Actualizar botones activos
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-view="${view}"]`).classList.add('active');
+        
+        // Re-renderizar timeline
+        this.render();
+        
+        // Actualizar KPIs para reflejar el nuevo período
+        NetberryComponents.kpis.update();
+    },
+
+    update: function() {
+        this.render();
+    }
+},
+
     projects: {
         render: function() {
             const container = document.getElementById('projectsList');
@@ -443,7 +372,7 @@ const NetberryComponents = {
                     <div>
                         <div class="project-name">${project.name}</div>
                         <div class="project-end">
-                            Finaliza: ${project.end} • 
+                            Finaliza: ${project.endDate} • 
                             ${project.departments.map(d => NetberryData.departments[d].name).join(', ')} • 
                             ${formatNumber.hours(project.hours)}
                         </div>
@@ -477,11 +406,12 @@ const NetberryComponents = {
         }
     },
 
-    // SIMULADOR COMPLETO EN MODAL
+    // SIMULADOR CON EFECTO DOMINÓ (Delegado a módulos externos)
     simulator: {
         currentStep: 1,
-        maxSteps: 3,
+        maxSteps: 4,
         projectData: {},
+        impactAnalysis: null,
 
         openModal: function() {
             const modal = document.getElementById('simulatorModal');
@@ -502,6 +432,7 @@ const NetberryComponents = {
         resetWizard: function() {
             this.currentStep = 1;
             this.projectData = {};
+            this.impactAnalysis = null;
         },
 
         renderWizard: function() {
@@ -524,15 +455,19 @@ const NetberryComponents = {
                 <div class="wizard-steps">
                     <div class="wizard-step ${this.currentStep >= 1 ? 'active' : ''} ${this.currentStep > 1 ? 'completed' : ''}">
                         <div class="step-number">1</div>
-                        <span>Información del Proyecto</span>
+                        <span>Información</span>
                     </div>
                     <div class="wizard-step ${this.currentStep >= 2 ? 'active' : ''} ${this.currentStep > 2 ? 'completed' : ''}">
                         <div class="step-number">2</div>
-                        <span>Recursos Requeridos</span>
+                        <span>Recursos</span>
                     </div>
-                    <div class="wizard-step ${this.currentStep >= 3 ? 'active' : ''}">
+                    <div class="wizard-step ${this.currentStep >= 3 ? 'active' : ''} ${this.currentStep > 3 ? 'completed' : ''}">
                         <div class="step-number">3</div>
-                        <span>Análisis de Impacto</span>
+                        <span>Impacto</span>
+                    </div>
+                    <div class="wizard-step ${this.currentStep >= 4 ? 'active' : ''}">
+                        <div class="step-number">🎯</div>
+                        <span>Efecto Dominó</span>
                     </div>
                 </div>
             `;
@@ -540,17 +475,22 @@ const NetberryComponents = {
 
         renderStepContent: function() {
             switch (this.currentStep) {
-                case 1:
-                    return this.renderStep1();
-                case 2:
-                    return this.renderStep2();
-                case 3:
-                    return this.renderStep3();
-                default:
-                    return '';
+                case 1: return this.renderStep1();
+                case 2: return this.renderStep2();
+                case 3: return this.renderStep3();
+                case 4: 
+                    // Delegar al módulo SimulatorDomino
+                    if (typeof SimulatorDomino !== 'undefined') {
+                        this.impactAnalysis = SimulatorDomino.calculateSimpleImpact(this.projectData);
+                        return SimulatorDomino.renderStep4(this.projectData, this.impactAnalysis);
+                    } else {
+                        return '<div class="error">SimulatorDomino no está disponible</div>';
+                    }
+                default: return '';
             }
         },
 
+        // Métodos básicos del simulador (pasos 1-3)
         renderStep1: function() {
             return `
                 <div class="wizard-content">
@@ -563,13 +503,9 @@ const NetberryComponents = {
                                        value="${this.projectData.name || ''}">
                             </div>
                             <div class="form-field">
-                                <label>Prioridad</label>
-                                <select id="projectPriority">
-                                    <option value="low" ${this.projectData.priority === 'low' ? 'selected' : ''}>Baja</option>
-                                    <option value="medium" ${this.projectData.priority === 'medium' ? 'selected' : ''}>Media</option>
-                                    <option value="high" ${this.projectData.priority === 'high' ? 'selected' : ''}>Alta</option>
-                                    <option value="critical" ${this.projectData.priority === 'critical' ? 'selected' : ''}>Crítica</option>
-                                </select>
+                                <label>💰 Valor del Proyecto (€)</label>
+                                <input type="number" id="projectValue" min="0" step="1000" 
+                                       placeholder="150000" value="${this.projectData.value || ''}">
                             </div>
                             <div class="form-field">
                                 <label>Duración Estimada (meses)</label>
@@ -581,11 +517,6 @@ const NetberryComponents = {
                                 <input type="date" id="projectStartDate" 
                                        value="${this.projectData.startDate || ''}">
                             </div>
-                        </div>
-                        <div class="form-field" style="margin-top: 20px;">
-                            <label>Descripción del Proyecto</label>
-                            <textarea id="projectDescription" rows="3" 
-                                      placeholder="Describe brevemente el alcance y objetivos del proyecto...">${this.projectData.description || ''}</textarea>
                         </div>
                     </div>
                 </div>
@@ -599,9 +530,6 @@ const NetberryComponents = {
                 <div class="wizard-content">
                     <div class="form-section">
                         <h3>👥 Recursos por Departamento</h3>
-                        <p style="color: #6b7280; margin-bottom: 25px;">
-                            Especifica las horas necesarias de cada departamento para el proyecto.
-                        </p>
                         <div class="form-grid">
                             ${departments.map(([key, dept]) => `
                                 <div class="dept-requirement">
@@ -617,13 +545,7 @@ const NetberryComponents = {
                                            placeholder="Horas necesarias"
                                            min="0" 
                                            max="2000"
-                                           value="${this.projectData.departments?.[key] || ''}"
-                                           oninput="NetberryComponents.simulator.updateUtilPreview('${key}')">
-                                    <div class="util-preview" id="preview-${key}">
-                                        ${this.projectData.departments?.[key] ? 
-                                          this.calculateNewUtilization(key, this.projectData.departments[key]) : 
-                                          'Introduce las horas para ver el impacto'}
-                                    </div>
+                                           value="${this.projectData.departments?.[key] || ''}">
                                 </div>
                             `).join('')}
                         </div>
@@ -643,32 +565,13 @@ const NetberryComponents = {
                             <div class="status-text status-${analysis.viability.replace('_', '-')}">
                                 ${this.getStatusText(analysis.viability)}
                             </div>
-                            <p style="color: #6b7280;">
-                                Proyecto: <strong>${this.projectData.name || 'Sin nombre'}</strong> • 
-                                Duración: <strong>${this.projectData.duration || 'N/A'} meses</strong> • 
-                                Total: <strong>${formatNumber.hours(analysis.totalHours)}</strong>
-                            </p>
                         </div>
-
-                        <div class="impact-grid">
-                            ${analysis.impacts.map(impact => `
-                                <div class="impact-item ${impact.status}">
-                                    <div class="impact-dept">${impact.department}</div>
-                                    <div class="impact-util">
-                                        ${formatNumber.percentage(impact.currentUtilization)} → 
-                                        <strong>${formatNumber.percentage(impact.newUtilization)}</strong>
-                                        (${impact.hoursRequired > 0 ? '+' + formatNumber.hours(impact.hoursRequired) : 'Sin cambios'})
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <div class="recommendations">
-                            <h4>🎯 Recomendaciones</h4>
-                            <ul>
-                                ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
-                            </ul>
-                        </div>
+                        ${analysis.viability !== 'viable' ? `
+                            <div class="domino-preview" style="margin-top: 20px; padding: 15px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border-left: 4px solid #ef4444;">
+                                <strong>⚠️ ADVERTENCIA:</strong> Este proyecto podría afectar otros proyectos en curso.
+                                <br><small>Haz clic en "Siguiente" para ver el <strong>análisis de impacto temporal</strong> completo.</small>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -683,53 +586,21 @@ const NetberryComponents = {
                         ← Anterior
                     </button>
                     
-                    <div style="display: flex; gap: 10px;">
-                        ${this.currentStep === 3 ? `
-                            <button class="wizard-btn secondary" onclick="NetberryComponents.simulator.resetWizard(); NetberryComponents.simulator.renderWizard();">
-                                🔄 Nuevo Análisis
-                            </button>
-                        ` : ''}
-                        
-                        <button class="wizard-btn primary" 
-                                onclick="NetberryComponents.simulator.${this.currentStep === 3 ? 'closeModal()' : 'nextStep()'}"
-                                id="nextStepBtn">
-                            ${this.currentStep === 3 ? '✓ Cerrar' : 'Siguiente →'}
-                        </button>
-                    </div>
+                    <button class="wizard-btn primary" 
+                            onclick="NetberryComponents.simulator.${this.currentStep === 4 ? 'closeModal()' : 'nextStep()'}"
+                            id="nextStepBtn">
+                        ${this.currentStep === 4 ? '✓ Cerrar' : 'Siguiente →'}
+                    </button>
                 </div>
             `;
         },
 
-        bindEvents: function() {
-            // Eventos para Step 1
-            if (this.currentStep === 1) {
-                const fields = ['projectName', 'projectPriority', 'projectDuration', 'projectStartDate', 'projectDescription'];
-                fields.forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    if (field) {
-                        field.addEventListener('input', () => this.validateStep1());
-                    }
-                });
-            }
-
-            // Eventos para Step 2
-            if (this.currentStep === 2) {
-                Object.keys(NetberryData.departments).forEach(deptKey => {
-                    const input = document.getElementById(`hours-${deptKey}`);
-                    if (input) {
-                        input.addEventListener('input', () => this.validateStep2());
-                    }
-                });
-            }
-        },
-
+        // Métodos de control
         nextStep: function() {
-            if (this.validateCurrentStep()) {
-                this.saveCurrentStepData();
-                if (this.currentStep < this.maxSteps) {
-                    this.currentStep++;
-                    this.renderWizard();
-                }
+            this.saveCurrentStepData();
+            if (this.currentStep < this.maxSteps) {
+                this.currentStep++;
+                this.renderWizard();
             }
         },
 
@@ -740,54 +611,12 @@ const NetberryComponents = {
             }
         },
 
-        validateCurrentStep: function() {
-            switch (this.currentStep) {
-                case 1:
-                    return this.validateStep1();
-                case 2:
-                    return this.validateStep2();
-                case 3:
-                    return true;
-                default:
-                    return false;
-            }
-        },
-
-        validateStep1: function() {
-            const name = document.getElementById('projectName')?.value.trim();
-            const duration = document.getElementById('projectDuration')?.value;
-            
-            const isValid = name && duration && parseInt(duration) > 0 && parseInt(duration) <= 24;
-            
-            const nextBtn = document.getElementById('nextStepBtn');
-            if (nextBtn) {
-                nextBtn.disabled = !isValid;
-            }
-            
-            return isValid;
-        },
-
-        validateStep2: function() {
-            const hasHours = Object.keys(NetberryData.departments).some(deptKey => {
-                const input = document.getElementById(`hours-${deptKey}`);
-                return input && parseInt(input.value) > 0;
-            });
-            
-            const nextBtn = document.getElementById('nextStepBtn');
-            if (nextBtn) {
-                nextBtn.disabled = !hasHours;
-            }
-            
-            return hasHours;
-        },
-
         saveCurrentStepData: function() {
             if (this.currentStep === 1) {
                 this.projectData.name = document.getElementById('projectName')?.value || '';
-                this.projectData.priority = document.getElementById('projectPriority')?.value || 'medium';
+                this.projectData.value = parseInt(document.getElementById('projectValue')?.value) || 0;
                 this.projectData.duration = parseInt(document.getElementById('projectDuration')?.value) || 6;
                 this.projectData.startDate = document.getElementById('projectStartDate')?.value || '';
-                this.projectData.description = document.getElementById('projectDescription')?.value || '';
             } else if (this.currentStep === 2) {
                 this.projectData.departments = {};
                 Object.keys(NetberryData.departments).forEach(deptKey => {
@@ -799,33 +628,8 @@ const NetberryComponents = {
             }
         },
 
-        updateUtilPreview: function(deptKey) {
-            const input = document.getElementById(`hours-${deptKey}`);
-            const preview = document.getElementById(`preview-${deptKey}`);
-            
-            if (input && preview) {
-                const hours = parseInt(input.value) || 0;
-                if (hours > 0) {
-                    preview.textContent = this.calculateNewUtilization(deptKey, hours);
-                } else {
-                    preview.textContent = 'Introduce las horas para ver el impacto';
-                }
-            }
-        },
-
-        calculateNewUtilization: function(deptKey, hours) {
-            const dept = NetberryData.departments[deptKey];
-            if (!dept) return 'Error';
-
-            const monthlyCapacity = dept.capacity / 12;
-            const monthlyHours = hours / (this.projectData.duration || 6);
-            const newUtil = dept.utilization + (monthlyHours / monthlyCapacity * 100);
-
-            const status = newUtil > 100 ? 'Imposible' : 
-                          newUtil > 95 ? 'Crítico' : 
-                          newUtil > 85 ? 'Riesgo' : 'Viable';
-
-            return `Nuevo: ${formatNumber.percentage(newUtil)} (${status})`;
+        bindEvents: function() {
+            // Eventos básicos
         },
 
         performAnalysis: function() {
@@ -833,31 +637,19 @@ const NetberryComponents = {
         },
 
         getStatusIcon: function(viability) {
-            const icons = {
-                'viable': '✅',
-                'risky': '⚠️',  
-                'not_viable': '❌'
-            };
+            const icons = { 'viable': '✅', 'risky': '⚠️', 'not_viable': '❌' };
             return icons[viability] || '❓';
         },
 
         getStatusText: function(viability) {
-            const texts = {
-                'viable': 'Proyecto Viable',
-                'risky': 'Proyecto con Riesgos',
-                'not_viable': 'Proyecto No Viable'
-            };
+            const texts = { 'viable': 'Proyecto Viable', 'risky': 'Proyecto con Riesgos', 'not_viable': 'Proyecto No Viable' };
             return texts[viability] || 'Estado Desconocido';
         }
     },
 
-    // Método para cerrar modal del simulador
-    closeSimulatorModal: function() {
-        this.simulator.closeModal();
-    },
-
     // Inicializar todos los componentes
     init: function() {
+        this.gantt.render();
         this.kpis.render();
         this.filters.render();
         this.departments.render();
@@ -883,6 +675,7 @@ const NetberryComponents = {
 
     // Actualizar todos los componentes
     updateAll: function() {
+        this.gantt.update();
         this.kpis.update();
         this.departments.filter();
         this.projects.filter();
@@ -892,3 +685,4 @@ const NetberryComponents = {
 
 // Exportar para uso global
 window.NetberryComponents = NetberryComponents;
+
