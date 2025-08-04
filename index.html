@@ -9,8 +9,14 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <div class="status-indicator" id="statusIndicator">
-                ⚠️ Atención Requerida
+            <div class="header-actions">
+                <div class="status-indicator" id="statusIndicator">
+                    ⚠️ Atención Requerida
+                </div>
+                <button class="simulator-header-btn" id="simulatorHeaderBtn">
+                    🎯 Simulador de Proyectos
+                    <span class="simulator-subtitle">Evalúa impacto y viabilidad</span>
+                </button>
             </div>
             <h1>Capacity Planning</h1>
             <p class="subtitle">Netberry • Dashboard Ejecutivo • Actualización en tiempo real</p>
@@ -38,14 +44,14 @@
                         📊 Proyección de Capacidad Anual
                     </div>
                     <div class="timeline-toggle">
-                    <button class="toggle-btn active" data-view="annual">📅 Anual</button>
-                    <button class="toggle-btn" data-view="quarterly">📊 Trimestral</button>
-                    <select class="year-selector" id="yearSelector" style="display: none;">
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                    </select>
-                </div>
+                        <button class="toggle-btn active" data-view="annual">📅 Anual</button>
+                        <button class="toggle-btn" data-view="quarterly">📊 Trimestral</button>
+                        <select class="year-selector" id="yearSelector" style="display: none;">
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="capacity-timeline" id="capacityTimeline">
                     <!-- Timeline se carga dinámicamente -->
@@ -77,41 +83,30 @@
             </div>
         </div>
         
-        <!-- Bottom Section -->
-        <div class="bottom-section">
-            <div class="simulator-card">
-                <div class="simulator-title">
-                    🎯 Simulador de Impacto de Proyectos
-                </div>
-                <div class="simulator-content" id="simulatorContent">
-                    <!-- El simulador se carga dinámicamente -->
-                </div>
+        <!-- Bottom Section - Solo proyectos ahora -->
+        <div class="chart-container">
+            <div class="chart-title">
+                📅 Próximas Liberaciones de Recursos
+            </div>
+            <div class="project-list" id="projectsList">
+                <!-- Los proyectos se generan dinámicamente -->
             </div>
             
-            <div class="chart-container">
-                <div class="chart-title">
-                    📅 Próximas Liberaciones de Recursos
-                </div>
-                <div class="project-list" id="projectsList">
-                    <!-- Los proyectos se generan dinámicamente -->
-                </div>
-                
-                <div style="margin-top: 20px; padding: 18px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; border-left: 5px solid #10b981;">
-                    <strong style="color: #16a34a; font-size: 16px;">
-                        💡 Ventana de Oportunidad Óptima
-                    </strong><br>
-                    <span style="color: #166534; font-size: 14px;" id="optimalWindow">
-                        2026 - Se liberarán ~8,560h (capacidad total anual disponible)
-                    </span><br>
-                    <small style="color: #15803d; opacity: 0.8;">
-                        Ideal para proyectos estratégicos de gran envergadura
-                    </small>
-                </div>
+            <div style="margin-top: 20px; padding: 18px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; border-left: 5px solid #10b981;">
+                <strong style="color: #16a34a; font-size: 16px;">
+                    💡 Ventana de Oportunidad Óptima
+                </strong><br>
+                <span style="color: #166534; font-size: 14px;" id="optimalWindow">
+                    2026 - Se liberarán ~8,560h (capacidad total anual disponible)
+                </span><br>
+                <small style="color: #15803d; opacity: 0.8;">
+                    Ideal para proyectos estratégicos de gran envergadura
+                </small>
             </div>
         </div>
     </div>
 
-    <!-- Modal para vista detallada -->
+    <!-- Modal para vista detallada de departamentos -->
     <div id="departmentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -126,6 +121,23 @@
                 <h3 style="margin: 25px 0 15px; color: var(--dark);">👥 Equipo y Asignaciones</h3>
                 <div class="people-grid" id="peopleGrid">
                     <!-- Personas se generarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal del Simulador de Proyectos -->
+    <div id="simulatorModal" class="modal">
+        <div class="modal-content simulator-modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="NetberryComponents.closeSimulatorModal()">&times;</span>
+                <h2>🎯 Simulador de Impacto de Proyectos</h2>
+                <p>Evalúa la viabilidad y el impacto de nuevos proyectos en la capacidad de tus equipos</p>
+            </div>
+            <div class="modal-body">
+                <!-- Simulador content se carga dinámicamente aquí -->
+                <div id="simulatorModalContent">
+                    <!-- El simulador se renderiza aquí -->
                 </div>
             </div>
         </div>

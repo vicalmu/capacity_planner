@@ -31,14 +31,7 @@ const NetberryApp = {
             
             console.log('✅ Netberry Capacity Planning inicializado correctamente');
             
-            // Mostrar notificación de bienvenida
-            setTimeout(() => {
-                NetberryUtils.notifications.show(
-                    'Dashboard cargado correctamente. Todos los números están formateados a 2 decimales máximo.',
-                    'success',
-                    4000
-                );
-            }, 1000);
+            
 
         } catch (error) {
             console.error('❌ Error al inicializar la aplicación:', error);

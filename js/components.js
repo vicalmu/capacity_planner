@@ -303,7 +303,7 @@ const NetberryComponents = {
         },
 
         // NUEVO: Generar datos trimestrales con orden correcto Q1→Q2→Q3→Q4
-       generateQuarterlyData: function(filteredDepartments) {
+        generateQuarterlyData: function(filteredDepartments) {
             const totalCapacity = NetberryData.calculations.getTotalQuarterlyCapacity(filteredDepartments);
             const selectedYear = NetberryData.config.selectedYear;
             
@@ -365,17 +365,17 @@ const NetberryComponents = {
                     this.switchView(view);
                 });
             });
-    
-    // ← AGREGAR ESTE EVENT LISTENER
-    const yearSelector = document.getElementById('yearSelector');
-    if (yearSelector) {
-        yearSelector.addEventListener('change', (e) => {
-            NetberryData.config.selectedYear = parseInt(e.target.value);
-            this.render();
-            NetberryComponents.kpis.update();
-        });
-    }
-},
+            
+            // Event listener para selector de año
+            const yearSelector = document.getElementById('yearSelector');
+            if (yearSelector) {
+                yearSelector.addEventListener('change', (e) => {
+                    NetberryData.config.selectedYear = parseInt(e.target.value);
+                    this.render();
+                    NetberryComponents.kpis.update();
+                });
+            }
+        },
 
         // NUEVO: Cambiar entre vista anual y trimestral
         switchView: function(view) {
@@ -387,7 +387,7 @@ const NetberryComponents = {
             });
             document.querySelector(`[data-view="${view}"]`).classList.add('active');
             
-            // ← AGREGAR ESTAS LÍNEAS
+            // Mostrar/ocultar selector de año
             const yearSelector = document.getElementById('yearSelector');
             if (yearSelector) {
                 if (view === 'quarterly') {
@@ -397,13 +397,13 @@ const NetberryComponents = {
                     yearSelector.style.display = 'none';
                 }
             }
-    
-    // Re-renderizar timeline
-    this.render();
-    
-    // Actualizar KPIs para reflejar el nuevo período
-    NetberryComponents.kpis.update();
-},
+            
+            // Re-renderizar timeline
+            this.render();
+            
+            // Actualizar KPIs para reflejar el nuevo período
+            NetberryComponents.kpis.update();
+        },
 
         // NUEVO: Actualizar título del gráfico según vista
         updateChartTitle: function() {
@@ -411,27 +411,6 @@ const NetberryComponents = {
             if (titleElement) {
                 const isAnnual = NetberryData.config.timelineView === 'annual';
                 titleElement.textContent = `📊 Proyección de Capacidad ${isAnnual ? 'Anual' : 'Trimestral'}`;
-            }
-        },
-
-        // Obtener título según filtro activo
-        getTimelineTitle: function() {
-            const isAnnual = NetberryData.config.timelineView === 'annual';
-            const timeType = isAnnual ? 'Anual' : 'Trimestral';
-            
-            if (NetberryUtils.activeFilters.includes('all')) {
-                return `Proyección de Capacidad ${timeType} - Todos los Departamentos`;
-            } else if (NetberryUtils.activeFilters.length === 1) {
-                const deptKey = NetberryUtils.activeFilters[0];
-                const deptName = NetberryData.departments[deptKey].name;
-                return `Proyección de Capacidad ${timeType} - ${deptName}`;
-            } else {
-                const deptNames = NetberryUtils.activeFilters
-                    .map(key => NetberryData.departments[key].name)
-                    .slice(0, 2); // Mostrar máximo 2 nombres
-                const remaining = NetberryUtils.activeFilters.length - 2;
-                const suffix = remaining > 0 ? ` +${remaining} más` : '';
-                return `Proyección de Capacidad ${timeType} - ${deptNames.join(', ')}${suffix}`;
             }
         },
 
@@ -451,7 +430,6 @@ const NetberryComponents = {
                 }, index * 50);
             });
         }
-
     },
 
     // Componente de proyectos
@@ -499,6 +477,385 @@ const NetberryComponents = {
         }
     },
 
+    // SIMULADOR COMPLETO EN MODAL
+    simulator: {
+        currentStep: 1,
+        maxSteps: 3,
+        projectData: {},
+
+        openModal: function() {
+            const modal = document.getElementById('simulatorModal');
+            if (modal) {
+                modal.style.display = 'block';
+                this.renderWizard();
+            }
+        },
+
+        closeModal: function() {
+            const modal = document.getElementById('simulatorModal');
+            if (modal) {
+                modal.style.display = 'none';
+                this.resetWizard();
+            }
+        },
+
+        resetWizard: function() {
+            this.currentStep = 1;
+            this.projectData = {};
+        },
+
+        renderWizard: function() {
+            const container = document.getElementById('simulatorModalContent');
+            if (!container) return;
+
+            container.innerHTML = `
+                <div class="simulator-wizard">
+                    ${this.renderSteps()}
+                    ${this.renderStepContent()}
+                    ${this.renderActions()}
+                </div>
+            `;
+
+            this.bindEvents();
+        },
+
+        renderSteps: function() {
+            return `
+                <div class="wizard-steps">
+                    <div class="wizard-step ${this.currentStep >= 1 ? 'active' : ''} ${this.currentStep > 1 ? 'completed' : ''}">
+                        <div class="step-number">1</div>
+                        <span>Información del Proyecto</span>
+                    </div>
+                    <div class="wizard-step ${this.currentStep >= 2 ? 'active' : ''} ${this.currentStep > 2 ? 'completed' : ''}">
+                        <div class="step-number">2</div>
+                        <span>Recursos Requeridos</span>
+                    </div>
+                    <div class="wizard-step ${this.currentStep >= 3 ? 'active' : ''}">
+                        <div class="step-number">3</div>
+                        <span>Análisis de Impacto</span>
+                    </div>
+                </div>
+            `;
+        },
+
+        renderStepContent: function() {
+            switch (this.currentStep) {
+                case 1:
+                    return this.renderStep1();
+                case 2:
+                    return this.renderStep2();
+                case 3:
+                    return this.renderStep3();
+                default:
+                    return '';
+            }
+        },
+
+        renderStep1: function() {
+            return `
+                <div class="wizard-content">
+                    <div class="form-section">
+                        <h3>📋 Información Básica del Proyecto</h3>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Nombre del Proyecto</label>
+                                <input type="text" id="projectName" placeholder="Ej: Nueva plataforma e-commerce" 
+                                       value="${this.projectData.name || ''}">
+                            </div>
+                            <div class="form-field">
+                                <label>Prioridad</label>
+                                <select id="projectPriority">
+                                    <option value="low" ${this.projectData.priority === 'low' ? 'selected' : ''}>Baja</option>
+                                    <option value="medium" ${this.projectData.priority === 'medium' ? 'selected' : ''}>Media</option>
+                                    <option value="high" ${this.projectData.priority === 'high' ? 'selected' : ''}>Alta</option>
+                                    <option value="critical" ${this.projectData.priority === 'critical' ? 'selected' : ''}>Crítica</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>Duración Estimada (meses)</label>
+                                <input type="number" id="projectDuration" min="1" max="24" 
+                                       placeholder="6" value="${this.projectData.duration || ''}">
+                            </div>
+                            <div class="form-field">
+                                <label>Fecha de Inicio Deseada</label>
+                                <input type="date" id="projectStartDate" 
+                                       value="${this.projectData.startDate || ''}">
+                            </div>
+                        </div>
+                        <div class="form-field" style="margin-top: 20px;">
+                            <label>Descripción del Proyecto</label>
+                            <textarea id="projectDescription" rows="3" 
+                                      placeholder="Describe brevemente el alcance y objetivos del proyecto...">${this.projectData.description || ''}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+        },
+
+        renderStep2: function() {
+            const departments = Object.entries(NetberryData.departments);
+            
+            return `
+                <div class="wizard-content">
+                    <div class="form-section">
+                        <h3>👥 Recursos por Departamento</h3>
+                        <p style="color: #6b7280; margin-bottom: 25px;">
+                            Especifica las horas necesarias de cada departamento para el proyecto.
+                        </p>
+                        <div class="form-grid">
+                            ${departments.map(([key, dept]) => `
+                                <div class="dept-requirement">
+                                    <div class="dept-header">
+                                        <div class="dept-name-sim">${dept.name}</div>
+                                        <div class="current-util">
+                                            Actual: ${formatNumber.percentage(dept.utilization, 0)}
+                                        </div>
+                                    </div>
+                                    <input type="number" 
+                                           class="hours-input" 
+                                           id="hours-${key}" 
+                                           placeholder="Horas necesarias"
+                                           min="0" 
+                                           max="2000"
+                                           value="${this.projectData.departments?.[key] || ''}"
+                                           oninput="NetberryComponents.simulator.updateUtilPreview('${key}')">
+                                    <div class="util-preview" id="preview-${key}">
+                                        ${this.projectData.departments?.[key] ? 
+                                          this.calculateNewUtilization(key, this.projectData.departments[key]) : 
+                                          'Introduce las horas para ver el impacto'}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        },
+
+        renderStep3: function() {
+            const analysis = this.performAnalysis();
+            
+            return `
+                <div class="wizard-content">
+                    <div class="results-summary">
+                        <div class="viability-status">
+                            <div class="status-icon">${this.getStatusIcon(analysis.viability)}</div>
+                            <div class="status-text status-${analysis.viability.replace('_', '-')}">
+                                ${this.getStatusText(analysis.viability)}
+                            </div>
+                            <p style="color: #6b7280;">
+                                Proyecto: <strong>${this.projectData.name || 'Sin nombre'}</strong> • 
+                                Duración: <strong>${this.projectData.duration || 'N/A'} meses</strong> • 
+                                Total: <strong>${formatNumber.hours(analysis.totalHours)}</strong>
+                            </p>
+                        </div>
+
+                        <div class="impact-grid">
+                            ${analysis.impacts.map(impact => `
+                                <div class="impact-item ${impact.status}">
+                                    <div class="impact-dept">${impact.department}</div>
+                                    <div class="impact-util">
+                                        ${formatNumber.percentage(impact.currentUtilization)} → 
+                                        <strong>${formatNumber.percentage(impact.newUtilization)}</strong>
+                                        (${impact.hoursRequired > 0 ? '+' + formatNumber.hours(impact.hoursRequired) : 'Sin cambios'})
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="recommendations">
+                            <h4>🎯 Recomendaciones</h4>
+                            <ul>
+                                ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        },
+
+        renderActions: function() {
+            return `
+                <div class="wizard-actions">
+                    <button class="wizard-btn secondary" 
+                            onclick="NetberryComponents.simulator.previousStep()"
+                            ${this.currentStep === 1 ? 'style="visibility: hidden;"' : ''}>
+                        ← Anterior
+                    </button>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        ${this.currentStep === 3 ? `
+                            <button class="wizard-btn secondary" onclick="NetberryComponents.simulator.resetWizard(); NetberryComponents.simulator.renderWizard();">
+                                🔄 Nuevo Análisis
+                            </button>
+                        ` : ''}
+                        
+                        <button class="wizard-btn primary" 
+                                onclick="NetberryComponents.simulator.${this.currentStep === 3 ? 'closeModal()' : 'nextStep()'}"
+                                id="nextStepBtn">
+                            ${this.currentStep === 3 ? '✓ Cerrar' : 'Siguiente →'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        },
+
+        bindEvents: function() {
+            // Eventos para Step 1
+            if (this.currentStep === 1) {
+                const fields = ['projectName', 'projectPriority', 'projectDuration', 'projectStartDate', 'projectDescription'];
+                fields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.addEventListener('input', () => this.validateStep1());
+                    }
+                });
+            }
+
+            // Eventos para Step 2
+            if (this.currentStep === 2) {
+                Object.keys(NetberryData.departments).forEach(deptKey => {
+                    const input = document.getElementById(`hours-${deptKey}`);
+                    if (input) {
+                        input.addEventListener('input', () => this.validateStep2());
+                    }
+                });
+            }
+        },
+
+        nextStep: function() {
+            if (this.validateCurrentStep()) {
+                this.saveCurrentStepData();
+                if (this.currentStep < this.maxSteps) {
+                    this.currentStep++;
+                    this.renderWizard();
+                }
+            }
+        },
+
+        previousStep: function() {
+            if (this.currentStep > 1) {
+                this.currentStep--;
+                this.renderWizard();
+            }
+        },
+
+        validateCurrentStep: function() {
+            switch (this.currentStep) {
+                case 1:
+                    return this.validateStep1();
+                case 2:
+                    return this.validateStep2();
+                case 3:
+                    return true;
+                default:
+                    return false;
+            }
+        },
+
+        validateStep1: function() {
+            const name = document.getElementById('projectName')?.value.trim();
+            const duration = document.getElementById('projectDuration')?.value;
+            
+            const isValid = name && duration && parseInt(duration) > 0 && parseInt(duration) <= 24;
+            
+            const nextBtn = document.getElementById('nextStepBtn');
+            if (nextBtn) {
+                nextBtn.disabled = !isValid;
+            }
+            
+            return isValid;
+        },
+
+        validateStep2: function() {
+            const hasHours = Object.keys(NetberryData.departments).some(deptKey => {
+                const input = document.getElementById(`hours-${deptKey}`);
+                return input && parseInt(input.value) > 0;
+            });
+            
+            const nextBtn = document.getElementById('nextStepBtn');
+            if (nextBtn) {
+                nextBtn.disabled = !hasHours;
+            }
+            
+            return hasHours;
+        },
+
+        saveCurrentStepData: function() {
+            if (this.currentStep === 1) {
+                this.projectData.name = document.getElementById('projectName')?.value || '';
+                this.projectData.priority = document.getElementById('projectPriority')?.value || 'medium';
+                this.projectData.duration = parseInt(document.getElementById('projectDuration')?.value) || 6;
+                this.projectData.startDate = document.getElementById('projectStartDate')?.value || '';
+                this.projectData.description = document.getElementById('projectDescription')?.value || '';
+            } else if (this.currentStep === 2) {
+                this.projectData.departments = {};
+                Object.keys(NetberryData.departments).forEach(deptKey => {
+                    const input = document.getElementById(`hours-${deptKey}`);
+                    if (input && parseInt(input.value) > 0) {
+                        this.projectData.departments[deptKey] = parseInt(input.value);
+                    }
+                });
+            }
+        },
+
+        updateUtilPreview: function(deptKey) {
+            const input = document.getElementById(`hours-${deptKey}`);
+            const preview = document.getElementById(`preview-${deptKey}`);
+            
+            if (input && preview) {
+                const hours = parseInt(input.value) || 0;
+                if (hours > 0) {
+                    preview.textContent = this.calculateNewUtilization(deptKey, hours);
+                } else {
+                    preview.textContent = 'Introduce las horas para ver el impacto';
+                }
+            }
+        },
+
+        calculateNewUtilization: function(deptKey, hours) {
+            const dept = NetberryData.departments[deptKey];
+            if (!dept) return 'Error';
+
+            const monthlyCapacity = dept.capacity / 12;
+            const monthlyHours = hours / (this.projectData.duration || 6);
+            const newUtil = dept.utilization + (monthlyHours / monthlyCapacity * 100);
+
+            const status = newUtil > 100 ? 'Imposible' : 
+                          newUtil > 95 ? 'Crítico' : 
+                          newUtil > 85 ? 'Riesgo' : 'Viable';
+
+            return `Nuevo: ${formatNumber.percentage(newUtil)} (${status})`;
+        },
+
+        performAnalysis: function() {
+            return NetberryData.calculations.simulateProjectImpact(this.projectData.departments || {});
+        },
+
+        getStatusIcon: function(viability) {
+            const icons = {
+                'viable': '✅',
+                'risky': '⚠️',  
+                'not_viable': '❌'
+            };
+            return icons[viability] || '❓';
+        },
+
+        getStatusText: function(viability) {
+            const texts = {
+                'viable': 'Proyecto Viable',
+                'risky': 'Proyecto con Riesgos',
+                'not_viable': 'Proyecto No Viable'
+            };
+            return texts[viability] || 'Estado Desconocido';
+        }
+    },
+
+    // Método para cerrar modal del simulador
+    closeSimulatorModal: function() {
+        this.simulator.closeModal();
+    },
+
     // Inicializar todos los componentes
     init: function() {
         this.kpis.render();
@@ -506,6 +863,14 @@ const NetberryComponents = {
         this.departments.render();
         this.timeline.render();
         this.projects.render();
+        
+        // Configurar botón simulador del header
+        const simulatorBtn = document.getElementById('simulatorHeaderBtn');
+        if (simulatorBtn) {
+            simulatorBtn.addEventListener('click', () => {
+                this.simulator.openModal();
+            });
+        }
         
         // Animar entrada
         setTimeout(() => {
