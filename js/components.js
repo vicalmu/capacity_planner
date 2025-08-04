@@ -26,10 +26,13 @@ const NetberryComponents = {
                 });
             }
 
+            // Ajustar período según vista actual
+            const periodLabel = NetberryData.config.timelineView === 'annual' ? 'Anual 2025' : 'Q3 2025';
+
             container.innerHTML = `
                 <div class="kpi-card capacity">
                     <div class="kpi-value" style="color: #10b981;">${formatNumber.hours(availableCapacity)}</div>
-                    <div class="kpi-label">Capacidad Disponible (Q3 2025)</div>
+                    <div class="kpi-label">Capacidad Disponible (${periodLabel})</div>
                     <div class="kpi-trend ${this.getCapacityTrend(availableCapacity)}">
                         ${this.getCapacityMessage(availableCapacity)}
                     </div>
@@ -67,14 +70,14 @@ const NetberryComponents = {
         },
 
         getCapacityTrend: function(capacity) {
-            if (capacity > 2000) return 'trend-good';
-            if (capacity > 1000) return 'trend-warning';
+            if (capacity > 8000) return 'trend-good';
+            if (capacity > 4000) return 'trend-warning';
             return 'trend-critical';
         },
 
         getCapacityMessage: function(capacity) {
-            if (capacity > 2000) return '✓ Ventana para 3-4 proyectos grandes';
-            if (capacity > 1000) return '⚠️ Capacidad limitada - Priorizar proyectos';
+            if (capacity > 8000) return '✓ Ventana para múltiples proyectos grandes';
+            if (capacity > 4000) return '⚠️ Capacidad limitada - Priorizar proyectos';
             return '🔴 Capacidad crítica - Rechazar nuevos proyectos';
         },
 
@@ -187,7 +190,7 @@ const NetberryComponents = {
             NetberryComponents.kpis.update();
             NetberryComponents.departments.filter();
             NetberryComponents.projects.filter();
-            NetberryComponents.timeline.update(); // ← ESTA LÍNEA DEBE ESTAR
+            NetberryComponents.timeline.update();
         },
 
         clearAll: function() {
@@ -237,148 +240,217 @@ const NetberryComponents = {
         }
     },
 
-  // Componente de timeline actualizado para filtrar por departamento
-timeline: {
-    render: function() {
-        const container = document.getElementById('capacityTimeline');
-        if (!container) return;
+    // Componente de timeline ACTUALIZADO con vista anual/trimestral
+    timeline: {
+        render: function() {
+            const container = document.getElementById('capacityTimeline');
+            if (!container) return;
 
-        // Obtener departamentos filtrados
-        const filteredDepartments = NetberryData.calculations.getFilteredDepartments(NetberryUtils.activeFilters);
-        
-        // Calcular capacidad total de los departamentos filtrados
-        const totalFilteredCapacity = NetberryData.calculations.getTotalCapacity(filteredDepartments);
-        
-        // Generar datos trimestrales basados en departamentos filtrados
-        const quarters = this.generateQuarterData(filteredDepartments, totalFilteredCapacity);
+            // Obtener departamentos filtrados
+            const filteredDepartments = NetberryData.calculations.getFilteredDepartments(NetberryUtils.activeFilters);
+            
+            // Generar datos según vista actual
+            const timelineData = NetberryData.config.timelineView === 'annual' 
+                ? this.generateAnnualData(filteredDepartments)
+                : this.generateQuarterlyData(filteredDepartments);
 
-        // Determinar título según filtro activo
-        const title = this.getTimelineTitle();
+            // Actualizar título del gráfico
+            this.updateChartTitle();
 
-        container.innerHTML = `
-            <div class="timeline-header">
-                <h3>${title}</h3>
-                <div class="timeline-legend">
-                    <span class="legend-item"><span class="legend-color committed"></span>Comprometido</span>
-                    <span class="legend-item"><span class="legend-color buffer"></span>Buffer</span>
-                    <span class="legend-item"><span class="legend-color available"></span>Disponible</span>
-                </div>
-            </div>
-            ${quarters.map(quarter => `
+            container.innerHTML = timelineData.map(period => `
                 <div class="timeline-row">
-                    <div class="timeline-label">${quarter.label}</div>
+                    <div class="timeline-label">${period.label}</div>
                     <div class="timeline-bar">
                         <div class="bar-segment committed" 
-                             style="width: ${quarter.committed}%;"
-                             title="Comprometido: ${quarter.committed}% (${formatNumber.hours(quarter.committedHours)})">
-                            ${quarter.committed}%
+                             style="width: ${period.committed}%;"
+                             title="Comprometido: ${period.committed}% (${formatNumber.hours(period.committedHours)})">
+                            ${period.committed}%
                         </div>
                         <div class="bar-segment buffer" 
-                             style="width: ${quarter.buffer}%;"
-                             title="Buffer: ${quarter.buffer}% (${formatNumber.hours(quarter.bufferHours)})">
+                             style="width: ${period.buffer}%;"
+                             title="Buffer: ${period.buffer}% (${formatNumber.hours(period.bufferHours)})">
                             Buffer
                         </div>
                         <div class="bar-segment available" 
-                             style="width: ${quarter.available}%;"
-                             title="Disponible: ${quarter.available}% (${formatNumber.hours(quarter.availableHours)})">
-                            ${quarter.available}%
+                             style="width: ${period.available}%;"
+                             title="Disponible: ${period.available}% (${formatNumber.hours(period.availableHours)})">
+                            ${period.available}%
                         </div>
                     </div>
                     <div class="timeline-total">
-                        ${formatNumber.hours(quarter.total)}
-                        <div class="timeline-subtitle">${quarter.departments} dept${quarter.departments !== 1 ? 's' : ''}</div>
+                        ${formatNumber.hours(period.total)}
+                        <div class="timeline-subtitle">${period.departments} dept${period.departments !== 1 ? 's' : ''}</div>
                     </div>
                 </div>
-            `).join('')}
-        `;
-    },
-      // AGREGAR ESTE MÉTODO QUE FALTA:
-    update: function() {
-        console.log('🔄 Timeline update llamado');
-        this.render();
-    },
+            `).join('');
 
-    // Generar datos por trimestre para departamentos filtrados
-    generateQuarterData: function(filteredDepartments, totalCapacity) {
-        const quarters = [
-            { label: 'Q3 2025', baseCommitted: 68, trend: 0 },
-            { label: 'Q4 2025', baseCommitted: 72, trend: 4 },
-            { label: 'Q1 2026', baseCommitted: 58, trend: -10 },
-            { label: 'Q2 2026', baseCommitted: 45, trend: -23 }
-        ];
+            // Configurar eventos del toggle
+            this.bindToggleEvents();
+        },
 
-        return quarters.map(quarter => {
-            // Calcular utilización promedio de los departamentos filtrados
-            const avgUtilization = NetberryData.calculations.getAverageUtilization(filteredDepartments);
+        // NUEVO: Generar datos anuales
+        generateAnnualData: function(filteredDepartments) {
+            const totalCapacity = NetberryData.calculations.getTotalAnnualCapacity(filteredDepartments);
             
-            // Ajustar porcentajes basados en utilización actual y tendencia del trimestre
-            let committed = formatNumber.decimal(avgUtilization + quarter.trend);
-            committed = Math.max(0, Math.min(100, committed)); // Mantener entre 0-100%
+            const years = [
+                { label: '2025', baseCommitted: 78, trend: 0 },
+                { label: '2026', baseCommitted: 65, trend: -13 },
+                { label: '2027', baseCommitted: 58, trend: -20 },
+                { label: '2028', baseCommitted: 52, trend: -26 }
+            ];
+
+            return this.calculatePeriodData(years, filteredDepartments, totalCapacity);
+        },
+
+        // NUEVO: Generar datos trimestrales con orden correcto Q1→Q2→Q3→Q4
+       generateQuarterlyData: function(filteredDepartments) {
+            const totalCapacity = NetberryData.calculations.getTotalQuarterlyCapacity(filteredDepartments);
+            const selectedYear = NetberryData.config.selectedYear;
             
-            const buffer = 15; // Buffer fijo del 15%
-            let available = formatNumber.decimal(100 - committed - buffer);
-            available = Math.max(0, available); // No puede ser negativo
-            
-            // Ajustar committed si excede 85% (límite recomendado)
-            if (committed + buffer > 85) {
-                committed = Math.max(0, 85 - buffer);
-                available = formatNumber.decimal(100 - committed - buffer);
-            }
+            const quarters = [
+                { label: `Q1 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 72 : 58, trend: selectedYear === 2025 ? 4 : -10 },
+                { label: `Q2 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 75 : 45, trend: selectedYear === 2025 ? 7 : -23 },
+                { label: `Q3 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 68 : 52, trend: selectedYear === 2025 ? 0 : -16 },
+                { label: `Q4 ${selectedYear}`, baseCommitted: selectedYear === 2025 ? 70 : 48, trend: selectedYear === 2025 ? 2 : -20 }
+            ];
 
-            // Calcular horas absolutas
-            const quarterlCapacity = totalCapacity; // Capacidad trimestral
-            const committedHours = formatNumber.decimal((committed / 100) * quarterlCapacity);
-            const bufferHours = formatNumber.decimal((buffer / 100) * quarterlCapacity);
-            const availableHours = formatNumber.decimal((available / 100) * quarterlCapacity);
+            return this.calculatePeriodData(quarters, filteredDepartments, totalCapacity);
+        },
 
-            return {
-                label: quarter.label,
-                committed: formatNumber.decimal(committed),
-                buffer: formatNumber.decimal(buffer),
-                available: formatNumber.decimal(available),
-                total: quarterlCapacity,
-                committedHours,
-                bufferHours,
-                availableHours,
-                departments: filteredDepartments.length
-            };
-        });
-    },
+        // NUEVO: Método común para calcular datos de períodos
+        calculatePeriodData: function(periods, filteredDepartments, totalCapacity) {
+            return periods.map(period => {
+                // Calcular utilización promedio de los departamentos filtrados
+                const avgUtilization = NetberryData.calculations.getAverageUtilization(filteredDepartments);
+                
+                // Ajustar porcentajes basados en utilización actual y tendencia del período
+                let committed = formatNumber.decimal(avgUtilization + period.trend);
+                committed = Math.max(0, Math.min(100, committed)); // Mantener entre 0-100%
+                
+                const buffer = 15; // Buffer fijo del 15%
+                let available = formatNumber.decimal(100 - committed - buffer);
+                available = Math.max(0, available); // No puede ser negativo
+                
+                // Ajustar committed si excede 85% (límite recomendado)
+                if (committed + buffer > 85) {
+                    committed = Math.max(0, 85 - buffer);
+                    available = formatNumber.decimal(100 - committed - buffer);
+                }
 
-    // Obtener título según filtro activo
-    getTimelineTitle: function() {
-        if (NetberryUtils.activeFilters.includes('all')) {
-            return 'Proyección de Capacidad Trimestral - Todos los Departamentos';
-        } else if (NetberryUtils.activeFilters.length === 1) {
-            const deptKey = NetberryUtils.activeFilters[0];
-            const deptName = NetberryData.departments[deptKey].name;
-            return `Proyección de Capacidad Trimestral - ${deptName}`;
-        } else {
-            const deptNames = NetberryUtils.activeFilters
-                .map(key => NetberryData.departments[key].name)
-                .slice(0, 2); // Mostrar máximo 2 nombres
-            const remaining = NetberryUtils.activeFilters.length - 2;
-            const suffix = remaining > 0 ? ` +${remaining} más` : '';
-            return `Proyección de Capacidad Trimestral - ${deptNames.join(', ')}${suffix}`;
-        }
-    },
+                // Calcular horas absolutas
+                const committedHours = formatNumber.decimal((committed / 100) * totalCapacity);
+                const bufferHours = formatNumber.decimal((buffer / 100) * totalCapacity);
+                const availableHours = formatNumber.decimal((available / 100) * totalCapacity);
 
-    // Método para actualizar el timeline cuando cambian los filtros
-    update: function() {
-        this.render();
-        
-        // Animar actualización
-        const timelineRows = document.querySelectorAll('.timeline-row');
-        timelineRows.forEach((row, index) => {
-            row.style.opacity = '0.7';
-            row.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                row.style.transition = 'all 0.3s ease';
-                row.style.opacity = '1';
-                row.style.transform = 'scale(1)';
-            }, index * 50);
+                return {
+                    label: period.label,
+                    committed: formatNumber.decimal(committed),
+                    buffer: formatNumber.decimal(buffer),
+                    available: formatNumber.decimal(available),
+                    total: totalCapacity,
+                    committedHours,
+                    bufferHours,
+                    availableHours,
+                    departments: filteredDepartments.length
+                };
+            });
+        },
+
+        // NUEVO: Configurar eventos del toggle anual/trimestral
+        bindToggleEvents: function() {
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const view = btn.getAttribute('data-view');
+                    this.switchView(view);
+                });
+            });
+    
+    // ← AGREGAR ESTE EVENT LISTENER
+    const yearSelector = document.getElementById('yearSelector');
+    if (yearSelector) {
+        yearSelector.addEventListener('change', (e) => {
+            NetberryData.config.selectedYear = parseInt(e.target.value);
+            this.render();
+            NetberryComponents.kpis.update();
         });
     }
+},
+
+        // NUEVO: Cambiar entre vista anual y trimestral
+        switchView: function(view) {
+            NetberryData.config.timelineView = view;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${view}"]`).classList.add('active');
+            
+            // ← AGREGAR ESTAS LÍNEAS
+            const yearSelector = document.getElementById('yearSelector');
+            if (yearSelector) {
+                if (view === 'quarterly') {
+                    yearSelector.style.display = 'inline-block';
+                    yearSelector.value = NetberryData.config.selectedYear;
+                } else {
+                    yearSelector.style.display = 'none';
+                }
+            }
+    
+    // Re-renderizar timeline
+    this.render();
+    
+    // Actualizar KPIs para reflejar el nuevo período
+    NetberryComponents.kpis.update();
+},
+
+        // NUEVO: Actualizar título del gráfico según vista
+        updateChartTitle: function() {
+            const titleElement = document.querySelector('.chart-title');
+            if (titleElement) {
+                const isAnnual = NetberryData.config.timelineView === 'annual';
+                titleElement.textContent = `📊 Proyección de Capacidad ${isAnnual ? 'Anual' : 'Trimestral'}`;
+            }
+        },
+
+        // Obtener título según filtro activo
+        getTimelineTitle: function() {
+            const isAnnual = NetberryData.config.timelineView === 'annual';
+            const timeType = isAnnual ? 'Anual' : 'Trimestral';
+            
+            if (NetberryUtils.activeFilters.includes('all')) {
+                return `Proyección de Capacidad ${timeType} - Todos los Departamentos`;
+            } else if (NetberryUtils.activeFilters.length === 1) {
+                const deptKey = NetberryUtils.activeFilters[0];
+                const deptName = NetberryData.departments[deptKey].name;
+                return `Proyección de Capacidad ${timeType} - ${deptName}`;
+            } else {
+                const deptNames = NetberryUtils.activeFilters
+                    .map(key => NetberryData.departments[key].name)
+                    .slice(0, 2); // Mostrar máximo 2 nombres
+                const remaining = NetberryUtils.activeFilters.length - 2;
+                const suffix = remaining > 0 ? ` +${remaining} más` : '';
+                return `Proyección de Capacidad ${timeType} - ${deptNames.join(', ')}${suffix}`;
+            }
+        },
+
+        // Método para actualizar el timeline cuando cambian los filtros
+        update: function() {
+            this.render();
+            
+            // Animar actualización
+            const timelineRows = document.querySelectorAll('.timeline-row');
+            timelineRows.forEach((row, index) => {
+                row.style.opacity = '0.7';
+                row.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    row.style.transition = 'all 0.3s ease';
+                    row.style.opacity = '1';
+                    row.style.transform = 'scale(1)';
+                }, index * 50);
+            });
+        }
 
     },
 
@@ -449,6 +521,7 @@ timeline: {
         this.kpis.update();
         this.departments.filter();
         this.projects.filter();
+        this.timeline.update();
     }
 };
 

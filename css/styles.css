@@ -259,14 +259,74 @@ body {
     box-shadow: 0 15px 50px rgba(0,0,0,0.12);
 }
 
+/* Chart Header con Toggle */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
 .chart-title {
     font-size: 20px;
     font-weight: 700;
-    margin-bottom: 25px;
     color: #1f2937;
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.timeline-toggle {
+    display: flex;
+    gap: 5px;
+    background: #f3f4f6;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.toggle-btn {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #6b7280;
+}
+
+.toggle-btn:hover {
+    color: var(--primary-orange);
+}
+
+.toggle-btn.active {
+    background: white;
+    color: var(--primary-orange);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.year-selector {
+    padding: 8px 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 8px;
+}
+
+.year-selector:hover {
+    border-color: var(--primary-orange);
+}
+
+.year-selector:focus {
+    outline: none;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
 /* Department Grid */
@@ -772,6 +832,16 @@ body {
         width: 95%;
         margin: 5% auto;
     }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .timeline-toggle {
+        align-self: stretch;
+    }
 }
 
 /* Utility Classes */
@@ -781,92 +851,4 @@ body {
 
 .slide-up {
     animation: slideUp 0.4s ease;
-}
-/* Estilos adicionales para el timeline mejorado - Agregar a styles.css */
-
-.timeline-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f3f4f6;
-}
-
-.timeline-header h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #374151;
-}
-
-.timeline-legend {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.875rem;
-    color: #6b7280;
-}
-
-.legend-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-}
-
-.legend-color.committed {
-    background: linear-gradient(135deg, #3b82f6, #1e40af);
-}
-
-.legend-color.buffer {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-}
-
-.legend-color.available {
-    background: linear-gradient(135deg, #10b981, #047857);
-}
-
-.timeline-row {
-    transition: all 0.3s ease;
-}
-
-.timeline-subtitle {
-    font-size: 0.75rem;
-    color: #9ca3af;
-    margin-top: 2px;
-}
-
-.bar-segment {
-    position: relative;
-    cursor: help;
-}
-
-.bar-segment:hover {
-    filter: brightness(1.1);
-    transform: scaleY(1.05);
-    transition: all 0.2s ease;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .timeline-header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
-    
-    .timeline-legend {
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-    
-    .timeline-header h3 {
-        font-size: 1rem;
-    }
 }

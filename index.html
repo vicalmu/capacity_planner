@@ -33,8 +33,19 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="chart-container">
-                <div class="chart-title">
-                    📊 Proyección de Capacidad Trimestral
+                <div class="chart-header">
+                    <div class="chart-title">
+                        📊 Proyección de Capacidad Anual
+                    </div>
+                    <div class="timeline-toggle">
+                    <button class="toggle-btn active" data-view="annual">📅 Anual</button>
+                    <button class="toggle-btn" data-view="quarterly">📊 Trimestral</button>
+                    <select class="year-selector" id="yearSelector" style="display: none;">
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
                 </div>
                 <div class="capacity-timeline" id="capacityTimeline">
                     <!-- Timeline se carga dinámicamente -->
@@ -90,7 +101,7 @@
                         💡 Ventana de Oportunidad Óptima
                     </strong><br>
                     <span style="color: #166534; font-size: 14px;" id="optimalWindow">
-                        Q1 2026 - Se liberarán ~2,140h (27% capacidad total)
+                        2026 - Se liberarán ~8,560h (capacidad total anual disponible)
                     </span><br>
                     <small style="color: #15803d; opacity: 0.8;">
                         Ideal para proyectos estratégicos de gran envergadura

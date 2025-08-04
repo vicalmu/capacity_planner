@@ -25,20 +25,24 @@ const formatNumber = {
 
 // Datos completos del sistema con formateo aplicado
 const NetberryData = {
-    // Configuración global
+    // Configuración global - ACTUALIZADO con 1800h/persona/año
     config: {
-        trimesterHours: 7920,
+        annualHoursPerPerson: 1800, // ← NUEVA CAPACIDAD BASE
+        quarterlyHoursPerPerson: 450, // 1800/4 trimestres
         bufferPercentage: 15,
         warningThreshold: 85,
         criticalThreshold: 95,
-        currentQuarter: 'Q3 2025'
+        currentYear: 2025,
+        currentQuarter: 'Q3 2025',
+        timelineView: 'annual', // ← NUEVA: Vista por defecto anual
+        selectedYear: 2025 // ← AGREGAR ESTA LÍNEA
     },
 
-    // Departamentos con datos formateados
+    // Departamentos con capacidades recalculadas basadas en 1800h/persona/año
     departments: {
         php: {
             name: 'PHP',
-            capacity: 2160,
+            capacity: 21600, // 12 personas × 1800h = 21,600h anuales
             utilization: formatNumber.decimal(87.3),
             projects: 12,
             people: [
@@ -58,7 +62,7 @@ const NetberryData = {
         },
         dotnet: {
             name: '.NET',
-            capacity: 1440,
+            capacity: 14400, // 8 personas × 1800h = 14,400h anuales
             utilization: formatNumber.decimal(91.8),
             projects: 8,
             people: [
@@ -74,7 +78,7 @@ const NetberryData = {
         },
         devops: {
             name: 'DevOps',
-            capacity: 360,
+            capacity: 3600, // 2 personas × 1800h = 3,600h anuales
             utilization: formatNumber.decimal(94.7),
             projects: 15,
             people: [
@@ -84,7 +88,7 @@ const NetberryData = {
         },
         movilidad: {
             name: 'Movilidad',
-            capacity: 1080,
+            capacity: 10800, // 6 personas × 1800h = 10,800h anuales
             utilization: formatNumber.decimal(84.6),
             projects: 6,
             people: [
@@ -98,7 +102,7 @@ const NetberryData = {
         },
         ux: {
             name: 'UX-UI',
-            capacity: 900,
+            capacity: 9000, // 5 personas × 1800h = 9,000h anuales
             utilization: formatNumber.decimal(73.8),
             projects: 8,
             people: [
@@ -111,7 +115,7 @@ const NetberryData = {
         },
         pmo: {
             name: 'PMO',
-            capacity: 720,
+            capacity: 7200, // 4 personas × 1800h = 7,200h anuales
             utilization: formatNumber.decimal(67.5),
             projects: 3,
             people: [
@@ -123,7 +127,7 @@ const NetberryData = {
         },
         marketing: {
             name: 'Marketing',
-            capacity: 540,
+            capacity: 5400, // 3 personas × 1800h = 5,400h anuales
             utilization: formatNumber.decimal(51.8),
             projects: 2,
             people: [
@@ -134,7 +138,7 @@ const NetberryData = {
         },
         qa: {
             name: 'QA',
-            capacity: 720,
+            capacity: 7200, // 4 personas × 1800h = 7,200h anuales
             utilization: formatNumber.decimal(64.8),
             projects: 4,
             people: [
@@ -199,6 +203,20 @@ const NetberryData = {
                 .filter(dept => dept !== undefined);
         },
 
+        // NUEVO: Calcular capacidad total anual
+        getTotalAnnualCapacity: (departments = null) => {
+            if (!departments) departments = Object.values(NetberryData.departments);
+            const totalPeople = departments.reduce((sum, dept) => sum + dept.people.length, 0);
+            return totalPeople * NetberryData.config.annualHoursPerPerson;
+        },
+
+        // NUEVO: Calcular capacidad trimestral
+        getTotalQuarterlyCapacity: (departments = null) => {
+            if (!departments) departments = Object.values(NetberryData.departments);
+            const totalPeople = departments.reduce((sum, dept) => sum + dept.people.length, 0);
+            return totalPeople * NetberryData.config.quarterlyHoursPerPerson;
+        },
+
         simulateProjectImpact: (requirements) => {
             const impacts = [];
             let totalViability = 'viable';
@@ -206,7 +224,7 @@ const NetberryData = {
             Object.entries(requirements).forEach(([deptKey, hours]) => {
                 if (hours > 0 && NetberryData.departments[deptKey]) {
                     const dept = NetberryData.departments[deptKey];
-                    const monthlyCapacity = dept.capacity / 3; // Asumiendo trimestre
+                    const monthlyCapacity = dept.capacity / 12; // Capacidad mensual
                     const monthlyHours = hours / (requirements.duration || 3);
                     const newUtilization = dept.utilization + (monthlyHours / monthlyCapacity * 100);
                     
