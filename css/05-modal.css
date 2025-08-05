@@ -1,0 +1,529 @@
+/* 05-modal.css - Modales y Wizards */
+
+/* === MODAL BASE === */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: var(--z-modal);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: white;
+    margin: 2% auto;
+    padding: 0;
+    border-radius: var(--radius-xl);
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.4s ease;
+    box-shadow: var(--shadow-xl);
+}
+
+.simulator-modal-content {
+    max-width: 1000px;
+}
+
+/* === MODAL HEADER === */
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 100%);
+    color: white;
+    padding: 30px;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: var(--space-sm);
+}
+
+.modal-subtitle {
+    opacity: 0.9;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: var(--transition);
+    border: none;
+}
+
+.close-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* === MODAL BODY === */
+.modal-body {
+    padding: 30px;
+}
+
+/* === STATS GRID === */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: var(--space-sm);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--gray-500);
+}
+
+/* === PEOPLE GRID === */
+.people-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.person-card {
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 2px solid var(--gray-200);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.person-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-orange);
+}
+
+.person-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--dark);
+    margin-bottom: var(--space-sm);
+}
+
+.person-role {
+    color: var(--gray-500);
+    font-size: 13px;
+    margin-bottom: var(--space);
+}
+
+.person-utilization {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.util-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.util-fill {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    transition: width 0.5s ease;
+}
+
+.person-projects {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 10px;
+}
+
+/* === WIZARD SIMULATOR === */
+.simulator-wizard {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.wizard-steps {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.wizard-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    background: var(--gray-100);
+    color: var(--gray-500);
+    font-weight: 600;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.wizard-step.active {
+    background: var(--primary-orange);
+    color: white;
+    transform: scale(1.05);
+}
+
+.wizard-step.completed {
+    background: var(--success);
+    color: white;
+}
+
+.step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.wizard-content {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    min-height: 300px;
+}
+
+/* === FORM SECTIONS === */
+.form-section {
+    margin-bottom: 25px;
+}
+
+.form-section h3 {
+    color: var(--dark);
+    font-size: 18px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.form-field label {
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 14px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    padding: var(--space) var(--space-md);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    transition: var(--transition);
+    background: white;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+/* === DEPARTMENT REQUIREMENTS === */
+.dept-requirement {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 2px solid var(--gray-200);
+    transition: var(--transition);
+}
+
+.dept-requirement:hover {
+    border-color: var(--primary-orange);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.1);
+}
+
+.dept-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.dept-name-sim {
+    font-weight: 700;
+    color: var(--dark);
+    font-size: 16px;
+}
+
+.current-util {
+    font-size: 12px;
+    color: var(--gray-500);
+    background: var(--gray-100);
+    padding: 4px var(--space-sm);
+    border-radius: var(--radius-sm);
+}
+
+.hours-input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.util-preview {
+    font-size: 12px;
+    color: var(--gray-500);
+    text-align: center;
+}
+
+/* === WIZARD ACTIONS === */
+.wizard-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 2px solid var(--gray-200);
+}
+
+.wizard-btn {
+    padding: var(--space) var(--space-xl);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    font-size: 14px;
+}
+
+.wizard-btn.primary {
+    background: var(--primary-orange);
+    color: white;
+}
+
+.wizard-btn.primary:hover {
+    background: var(--secondary-orange);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.wizard-btn.secondary {
+    background: var(--gray-100);
+    color: var(--gray-500);
+}
+
+.wizard-btn.secondary:hover {
+    background: var(--gray-200);
+}
+
+.wizard-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* === RESULTS SUMMARY === */
+.results-summary {
+    background: white;
+    border-radius: var(--radius);
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.viability-status {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.status-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.status-text {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+}
+
+.status-viable { color: var(--success); }
+.status-risky { color: var(--warning); }
+.status-not-viable { color: var(--danger); }
+
+/* === IMPACT GRID === */
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.impact-item {
+    background: var(--gray-50);
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--gray-200);
+}
+
+.impact-item.viable { border-left-color: var(--success); }
+.impact-item.warning { border-left-color: var(--warning); }
+.impact-item.critical { border-left-color: var(--danger); }
+.impact-item.impossible { border-left-color: var(--gray-500); }
+
+.impact-dept {
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.impact-util {
+    font-size: 14px;
+    color: var(--gray-500);
+}
+
+/* === RECOMMENDATIONS === */
+.recommendations {
+    background: #f0f9ff;
+    border-radius: var(--radius);
+    padding: 20px;
+    border-left: 4px solid #3b82f6;
+}
+
+.recommendations h4 {
+    color: #1e40af;
+    margin-bottom: var(--space);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.recommendations ul {
+    list-style: none;
+    padding: 0;
+}
+
+.recommendations li {
+    padding: var(--space-sm) 0;
+    color: #1e3a8a;
+    position: relative;
+    padding-left: 20px;
+}
+
+.recommendations li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    color: #3b82f6;
+}
+
+/* === RESPONSIVE MODAL === */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .wizard-steps {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .wizard-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .wizard-btn {
+        width: 100%;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .people-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-header {
+        padding: 20px;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+    }
+    
+    .close-modal {
+        width: 32px;
+        height: 32px;
+        font-size: 24px;
+    }
+    
+    .wizard-content {
+        padding: 20px;
+    }
+}
