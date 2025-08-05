@@ -1,8 +1,8 @@
-// js/components-main.js - Coordinador Principal de Componentes
+// js/components-main.js - Coordinador Principal SIN Proyección de Capacidad Anual
 
 const NetberryComponents = {
     
-    // Componente de KPIs (mantenido en este archivo por simplicidad)
+    // Componente de KPIs (mantenido)
     kpis: {
         render: function() {
             const container = document.getElementById('kpiGrid');
@@ -26,8 +26,8 @@ const NetberryComponents = {
                 });
             }
 
-            // Ajustar período según vista actual
-            const periodLabel = NetberryData.config.timelineView === 'annual' ? 'Anual 2025' : 'Q3 2025';
+            // Ajustar período según vista actual del Gantt
+            const periodLabel = NetberryData.config.ganttView === 'annual' ? 'Anual 2025' : `${NetberryData.config.selectedQuarter} 2025`;
 
             container.innerHTML = `
                 <div class="kpi-card capacity">
@@ -120,7 +120,7 @@ const NetberryComponents = {
         }
     },
 
-    // Delegar al componente Gantt externo
+    // Delegar al componente Gantt externo (ACTUALIZADO)
     gantt: {
         render: function() {
             if (typeof GanttChart !== 'undefined') {
@@ -136,7 +136,7 @@ const NetberryComponents = {
         }
     },
 
-    // Componente de filtros (simplificado)
+    // Componente de filtros (mantenido)
     filters: {
         render: function() {
             const container = document.getElementById('filterButtons');
@@ -206,8 +206,7 @@ const NetberryComponents = {
             NetberryComponents.kpis.update();
             NetberryComponents.departments.filter();
             NetberryComponents.projects.filter();
-            NetberryComponents.timeline.update();
-            NetberryComponents.gantt.update();
+            NetberryComponents.gantt.update(); // ← ACTUALIZADO: Solo Gantt, sin timeline
         },
 
         clearAll: function() {
@@ -218,7 +217,7 @@ const NetberryComponents = {
         }
     },
 
-    // Componente de departamentos (simplificado)
+    // Componente de departamentos (mantenido)
     departments: {
         render: function() {
             const container = document.getElementById('departmentGrid');
@@ -257,110 +256,8 @@ const NetberryComponents = {
         }
     },
 
-timeline: {
-    render: function() {
-        const container = document.getElementById('capacityTimeline');
-        if (!container) return;
-
-        // Obtener departamentos filtrados
-        const filteredDepartments = NetberryData.calculations.getFilteredDepartments(NetberryUtils.activeFilters);
-        
-        // Generar datos según vista actual
-        const timelineData = NetberryData.config.timelineView === 'annual' 
-            ? this.generateAnnualData(filteredDepartments)
-            : this.generateQuarterlyData(filteredDepartments);
-
-        container.innerHTML = timelineData.map(period => `
-            <div class="timeline-row">
-                <div class="timeline-label">${period.label}</div>
-                <div class="timeline-bar">
-                    <div class="bar-segment committed" 
-                         style="width: ${period.committed}%;"
-                         title="Comprometido: ${period.committed}%">
-                        ${period.committed}%
-                    </div>
-                    <div class="bar-segment buffer" 
-                         style="width: ${period.buffer}%;"
-                         title="Buffer: ${period.buffer}%">
-                        Buffer
-                    </div>
-                    <div class="bar-segment available" 
-                         style="width: ${period.available}%;"
-                         title="Disponible: ${period.available}%">
-                        ${period.available}%
-                    </div>
-                </div>
-                <div class="timeline-total">${formatNumber.hours(period.total)}</div>
-            </div>
-        `).join('');
-
-        // Configurar eventos del toggle
-        this.bindToggleEvents();
-    },
-
-    generateAnnualData: function(filteredDepartments) {
-        const totalCapacity = NetberryData.calculations.getTotalCapacity(filteredDepartments);
-        
-        const years = [
-            { label: '2025', committed: 78, buffer: 15, available: 7 },
-            { label: '2026', committed: 65, buffer: 15, available: 20 },
-            { label: '2027', committed: 58, buffer: 15, available: 27 },
-            { label: '2028', committed: 52, buffer: 15, available: 33 }
-        ];
-
-        return years.map(year => ({
-            ...year,
-            total: totalCapacity
-        }));
-    },
-
-    generateQuarterlyData: function(filteredDepartments) {
-        const totalCapacity = NetberryData.calculations.getTotalCapacity(filteredDepartments) / 4;
-        const selectedYear = NetberryData.config.selectedYear || 2025;
-        
-        const quarters = [
-            { label: `Q1 ${selectedYear}`, committed: 72, buffer: 15, available: 13 },
-            { label: `Q2 ${selectedYear}`, committed: 75, buffer: 15, available: 10 },
-            { label: `Q3 ${selectedYear}`, committed: 68, buffer: 15, available: 17 },
-            { label: `Q4 ${selectedYear}`, committed: 70, buffer: 15, available: 15 }
-        ];
-
-        return quarters.map(quarter => ({
-            ...quarter,
-            total: totalCapacity
-        }));
-    },
-
-    bindToggleEvents: function() {
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const view = btn.getAttribute('data-view');
-                this.switchView(view);
-            });
-        });
-    },
-
-    switchView: function(view) {
-        NetberryData.config.timelineView = view;
-        
-        // Actualizar botones activos
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-view="${view}"]`).classList.add('active');
-        
-        // Re-renderizar timeline
-        this.render();
-        
-        // Actualizar KPIs para reflejar el nuevo período
-        NetberryComponents.kpis.update();
-    },
-
-    update: function() {
-        this.render();
-    }
-},
+    // ↓ SECCIÓN ELIMINADA: Ya no hay componente timeline 
+    // La proyección de capacidad anual se eliminó completamente
 
     projects: {
         render: function() {
@@ -406,7 +303,7 @@ timeline: {
         }
     },
 
-    // SIMULADOR CON EFECTO DOMINÓ (Delegado a módulos externos)
+    // SIMULADOR CON EFECTO DOMINÓ (mantenido sin cambios)
     simulator: {
         currentStep: 1,
         maxSteps: 4,
@@ -647,13 +544,13 @@ timeline: {
         }
     },
 
-    // Inicializar todos los componentes
+    // Inicializar todos los componentes (ACTUALIZADO)
     init: function() {
-        this.gantt.render();
+        this.gantt.render();       // ← GANTT FUSIONADO (con capacidad incluida)
         this.kpis.render();
         this.filters.render();
         this.departments.render();
-        this.timeline.render();
+        // ↓ ELIMINADO: this.timeline.render(); - Ya no existe la proyección de capacidad
         this.projects.render();
         
         // Configurar botón simulador del header
@@ -673,16 +570,14 @@ timeline: {
         }, 100);
     },
 
-    // Actualizar todos los componentes
+    // Actualizar todos los componentes (ACTUALIZADO)
     updateAll: function() {
-        this.gantt.update();
+        this.gantt.update();       // ← Solo Gantt fusionado
         this.kpis.update();
         this.departments.filter();
         this.projects.filter();
-        this.timeline.update();
     }
 };
 
 // Exportar para uso global
 window.NetberryComponents = NetberryComponents;
-

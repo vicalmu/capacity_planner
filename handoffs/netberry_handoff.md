@@ -1,126 +1,101 @@
-# 📋 NETBERRY CAPACITY PLANNING - HANDOFF FINAL
-*Proyecto completado - Agosto 2025*
+# 📋 NETBERRY CAPACITY PLANNING - HANDOFF FINAL v2
+*Proyecto completado y optimizado - Agosto 2025*
 
 ## 🎯 OBJETIVO
-PMO necesita demostrar al director general si caben nuevos proyectos y justificar contrataciones. Dashboard para controlar capacidad departamental y rechazar proyectos cuando no hay recursos.
+Dashboard para PMO: demostrar viabilidad de nuevos proyectos, justificar contrataciones y rechazar proyectos sin recursos.
 
-## ✅ ESTADO ACTUAL: **100% COMPLETADO**
-**Dashboard completamente funcional y optimizado** - Todas las funcionalidades operativas, CSS reestructurado y optimizado.
+## ✅ ESTADO: **100% COMPLETADO Y OPTIMIZADO**
 
 ---
 
 ## 🏗️ ARQUITECTURA FINAL
 
-### **JavaScript Modular (1000 líneas total):**
+### **JavaScript Modular:**
 ```
 js/
-├── data.js                    # Datos + cálculos (formatNumber máx 2 decimales)
+├── data.js                    # Datos + cálculos (2-3 personas/dept)
 ├── utils.js                   # Filtros, validaciones, eventos  
-├── gantt/
-│   └── gantt-chart.js        # Gantt completo separado (168 líneas)
-├── simulator/
-│   └── simulator-domino.js   # Efecto dominó realista (456 líneas)
-└── components-main.js        # Coordinador principal (378 líneas)
+├── gantt/gantt-chart.js       # Gantt fusionado con capacidad
+├── simulator/simulator-domino.js # Efecto dominó realista
+└── components-main.js         # Coordinador principal
 ```
 
-### **CSS Modular Optimizado (7 archivos):**
+### **CSS Modular:**
 ```
-css/
-├── 01-base.css          # Variables, reset, tipografía
-├── 02-layout.css        # Header, containers, estructura
-├── 03-components.css    # Botones, filtros, inputs reutilizables
-├── 04-dashboard.css     # KPIs, Timeline, Gantt, Departamentos
-├── 05-modal.css         # Modales, wizards, simulador base
-├── 06-domino.css        # Efecto dominó, análisis completo
-├── 07-animations.css    # Animaciones, utilidades, responsive
-└── styles.css           # Importación principal
+css/styles.css → importa todos los módulos CSS
 ```
 
-### **HTML includes:**
-```html
-<link rel="stylesheet" href="css/styles.css">
-<script src="js/data.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/gantt/gantt-chart.js"></script>
-<script src="js/simulator/simulator-domino.js"></script>
-<script src="js/components-main.js"></script>
-```
+### **HTML:**
+- `index.html` - Dashboard principal SIN sección "Proyección de Capacidad Anual"
 
 ---
 
-## 🎯 FUNCIONALIDADES IMPLEMENTADAS Y OPERATIVAS
+## 🎯 FUNCIONALIDADES OPERATIVAS
 
 ### **Dashboard Principal:**
-- ✅ **KPIs dinámicos** filtrados por departamento con métricas en tiempo real
-- ✅ **Gantt anual** completo con múltiples carriles y modales de proyecto
-- ✅ **Filtros por departamento** (individual/múltiple/todos) con recálculo automático
-- ✅ **Timeline anual/trimestral** con botones operativos y barras visuales correctas
-- ✅ **Vista departamental** con modales navegables y utilización en anillos
+- ✅ KPIs dinámicos filtrados por departamento
+- ✅ **Gantt fusionado**: Capacidad departamental + Proyectos en una sola vista
+- ✅ Filtros por departamento con recálculo automático
+- ✅ Vista departamental con modales navegables
 
-### **Simulador de Impacto Realista:**
-- ✅ **Wizard 4 pasos** completo: Información → Recursos → Impacto → Efecto Dominó
-- ✅ **Lógica realista** - Proyectos en paralelo, ralentización por prioridades
-- ✅ **Rangos de ralentización**: 2-35% según prioridad del proyecto
-- ✅ **Impacto por prioridad**: Críticos protegidos (2-5%), Bajos absorben impacto (25-35%)
-- ✅ **Argumentos automáticos** para confrontación con director general
-- ✅ **Exportación JSON** de informes para presentaciones
+### **Gantt Fusionado (NUEVA FUNCIONALIDAD):**
+- ✅ **Estructura por departamento**: 
+  ```
+  PHP (fila capacidad) | [87% utilización mensual real]
+  ├─ Proyecto 1        | [████████░░░░░░░░░░░░░░░░░░░░]
+  └─ Proyecto 2        | [░░░░████████░░░░░░░░░░░░░░░░]
+  ```
+- ✅ **Cálculo mensual correcto**: Horas de proyectos / capacidad mensual departamental
+- ✅ **Colores de estado**: Verde (0-90%), Naranja (91-100%), Rojo (>100%)
+- ✅ **Vista anual/trimestral**: Trimestral = zoom, sin recalcular datos
+- ✅ **Controles integrados**: Año + Vista + Trimestre en una sola sección
 
-### **Casos de Uso Completados:**
-- ✅ **Evaluación proyecto nuevo** con matriz de prioridades y impacto económico
-- ✅ **Justificación de recursos** con vista granular y exportación de datos
-- ✅ **Planificación estratégica** con timeline filtrable y Gantt interactivo
-- ✅ **Confrontación director** con argumentos devastadores y frases preparadas
-- ✅ **Análisis departamental** con navegación por modales y métricas detalladas
+### **Simulador de Impacto:**
+- ✅ Wizard 4 pasos con efecto dominó realista
+- ✅ Argumentos automáticos para confrontación ejecutiva
+- ✅ Exportación JSON de informes
 
 ---
 
-## 💾 DATOS Y CONFIGURACIÓN
+## 💾 DATOS OPTIMIZADOS
 
 ### **Capacidades (1800h/persona/año):**
-- **44 personas** distribuidas en **8 departamentos**
-- **54 proyectos activos** con fechas reales y progreso
-- **Umbrales**: Verde 0-84% | Amarillo 85-94% | Rojo 95%+
-- **Sin localStorage/sessionStorage** (incompatible servidor corporativo)
+- **20 personas** en **8 departamentos** (2-3 personas cada uno)
+- **12 proyectos activos** con fechas reales
+- **Umbrales**: Verde 0-90% | Naranja 91-100% | Rojo >100%
 
-### **Departamentos:**
-- **PHP**: 12 personas, 87.3% utilización (crítico)
-- **.NET**: 8 personas, 91.8% utilización (crítico)
-- **DevOps**: 2 personas, 94.7% utilización (saturado)
-- **Movilidad**: 6 personas, 84.6% utilización
-- **UX-UI**: 5 personas, 73.8% utilización
-- **PMO**: 4 personas, 67.5% utilización
-- **Marketing**: 3 personas, 51.8% utilización
-- **QA**: 4 personas, 64.8% utilización
+### **Departamentos Críticos:**
+- **PHP**: 3p, 87.3% utilización
+- **.NET**: 3p, 91.8% utilización  
+- **DevOps**: 2p, 94.7% utilización (saturado)
 
 ---
 
-## 🎨 OPTIMIZACIONES COMPLETADAS (SESIÓN AGOSTO 2025)
+## 🔧 CAMBIOS CLAVE RECIENTES
 
-### **✅ CSS Reestructurado Completamente:**
-- **Problema timeline solucionado**: Barras ahora 45px altura (vs 30px anterior)
-- **Eliminados conflictos**: Sin `!important` problemáticos
-- **Arquitectura profesional**: 6 archivos antiguos → 7 archivos modulares
-- **Variables CSS centralizadas**: Colores, espaciado, transiciones consistentes
-- **Performance optimizada**: Animaciones GPU, selectores eficientes
+### **✅ Gantt Fusionado (Nueva Implementación):**
+- **Eliminada** sección "Proyección de Capacidad Anual"
+- **Fusionada** capacidad departamental en el Gantt
+- **Cálculo mensual real**: Basado en proyectos activos por mes
+- **Vista trimestral corregida**: Solo zoom visual, sin recalcular datos
 
-### **✅ JavaScript Optimizado:**
-- **Arquitectura modular perfecta**: Separación clara de responsabilidades
-- **Formateo consistente**: `formatNumber` evita decimales largos
-- **Gestión de estado centralizada**: `NetberryData` bien diseñado
-- **Sin conflictos**: Cada módulo independiente con dependencias claras
-
-### **✅ Filtros y Botón Simulador Corregidos:**
-- CSS de emergencia aplicado para elementos dinámicos
-- Estilos naranjas corporativos y efectos hover perfectos
-- Funcionalidad 100% operativa
-
----
-
-## 🔧 ASPECTOS TÉCNICOS
-
-### **Inicialización:**
+### **✅ Cálculo de Utilización Mensual:**
 ```javascript
-// Auto-inicialización al cargar página
+// Ejemplo: Proyecto 1200h enero-diciembre
+// Horas mensuales: 1200h ÷ 12 meses = 100h/mes
+// Utilización: (100h ÷ capacidad_mensual) × 100%
+```
+
+### **✅ HTML Actualizado:**
+- **Eliminado**: Selector de año duplicado
+- **Eliminado**: Sección completa de proyección de capacidad
+- **Actualizado**: Título Gantt → "Gantt de Proyectos y Capacidad Departamental"
+
+---
+
+## 🚀 INICIALIZACIÓN
+
+```javascript
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => NetberryComponents.init(), 100);
 });
@@ -128,58 +103,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ### **Debug disponible:**
 ```javascript
-// Verificar estado
-console.log('Components:', typeof NetberryComponents);
-NetberryComponents.init(); // Re-inicializar si necesario
+NetberryComponents.init(); // Re-inicializar
+console.log('Estado:', typeof NetberryComponents);
 ```
 
-### **Dependencias:**
-- **Orden de carga**: Data → Utils → Gantt → SimulatorDomino → Components-main
-- **Sin librerías externas**: Vanilla JavaScript puro
-- **Compatible**: Navegadores modernos, responsive completo
+---
+
+## 🎯 CASOS DE USO COMPLETADOS
+
+1. **Evaluación proyecto nuevo** → Simulador con matriz de impacto
+2. **Justificación recursos** → Gantt fusionado con utilización real
+3. **Confrontación director** → Argumentos automáticos del simulador
+4. **Planificación estratégica** → Vista anual/trimestral integrada
 
 ---
 
-## 🚀 FRASES TÍPICAS DEL SIMULADOR
+## 🔥 PARA PRÓXIMAS SESIONES
 
-> *"Director, este proyecto sobrecarga DevOps del 94% al 105%. Los proyectos críticos se protegerán con ralentización mínima del 2-5%, pero los menos prioritarios sufrirán hasta 25-35% de ralentización. ¿Aceptamos este trade-off para conseguir este proyecto estratégico?"*
-
-> *"Análisis completo: El proyecto es viable pero generará ralentización del 12-18%. Nuestros proyectos críticos están protegidos, recomiendo proceder con revisión quincenal de capacidad."*
-
----
-
-## 🎯 RESULTADO FINAL
-
-**Dashboard profesional completamente funcional** con:
-- **Simulador devastador** para confrontaciones ejecutivas
-- **Métricas en tiempo real** con filtrado avanzado
-- **Argumentos automáticos** basados en datos reales
-- **Interfaz optimizada** y CSS modular profesional
-- **Error en simulador, al hacer click en cerrar ventana no cierra** 
-
-### **Usuario NO programador - Capacidades:**
-✅ **Usar dashboard** para análisis diario de capacidad
-✅ **Confrontar director** con simulador y argumentos automáticos
-✅ **Filtrar y analizar** departamentos y proyectos
-✅ **Generar informes** de impacto y justificación de recursos
-✅ **Planificar estratégicamente** con timeline y Gantt interactivos
-
----
-
-## 🔥 PARA RETOMAR FUTURAS SESIONES
-
-**Estado**: Proyecto 100% completado y optimizado
-**Arquitectura**: CSS modular + JS modular + HTML semántico
-**Funcionalidad**: Dashboard completo + Simulador realista
-**Performance**: Optimizada y sin conflictos
-**Mantenibilidad**: Estructura profesional y escalable
+**Estado**: Dashboard 100% funcional con Gantt fusionado
+**Arquitectura**: Modular y escalable
+**Performance**: Optimizada, sin localStorage/sessionStorage
+**Funcionalidad**: Gantt + Capacidad + Simulador completamente operativos
 
 **Comandos útiles:**
-- `NetberryComponents.init()` - Re-inicializar dashboard
-- `NetberryComponents.simulator.openModal()` - Abrir simulador
+- `NetberryComponents.init()` - Re-inicializar
+- `GanttChart.render()` - Re-renderizar Gantt
 - F12 → Console para debug
-- Ctrl+E en modal departamento para exportar datos
 
 ---
 
-*Handoff final - Proyecto Netberry Capacity Planning completado exitosamente*
+*Handoff v2 - Gantt fusionado implementado exitosamente*
