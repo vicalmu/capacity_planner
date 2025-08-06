@@ -8,165 +8,228 @@
     <link rel="stylesheet" href="css/mode_styles.css">
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <button class="back-to-home-btn" onclick="goHome()">
-        🏠 Inicio
-    </button>
-
     <!-- Alert Banner (condicional) -->
     <div class="alert-banner" id="alertBanner">
         🚨 ATENCIÓN: DevOps al 94.7% de capacidad - Acción requerida
     </div>
 
-    <!-- Header con color específico del modo -->
-    <div class="header gantt-mode">
-        <div class="header-content">
-            <div class="header-actions">
-                <div class="status-indicator" id="statusIndicator">
-                    ⚠️ Atención Requerida
+    <!-- 🎯 HEADER LIMPIO Y FUNCIONAL -->
+    <div class="header gantt-mode smart-header">
+        <div class="header-content-smart">
+            <!-- Logo y navegación -->
+            <div class="header-brand">
+                <button class="back-home-icon" onclick="goHome()" title="Volver al inicio">🏠</button>
+                <h1>Netberry</h1>
+            </div>
+            
+            <!-- Indicadores Health + Alerts -->
+            <div class="header-indicators">
+                <div class="health-compact">
+                    <span class="health-number-compact" id="healthCompact">87</span>
+                    <span class="health-label-compact">Health</span>
                 </div>
-                <div class="mode-indicator">
-                    <span>📊</span>
-                    <span>Vista Gantt Fusionada</span>
+                <div class="alerts-compact">
+                    <span class="alerts-number-compact" id="alertsCompact">3</span>
+                    <span class="alerts-label-compact">Críticas</span>
                 </div>
-                <button class="simulator-header-btn" id="simulatorHeaderBtn">
-                    🎯 Simulador de Proyectos
-                    <span class="simulator-subtitle">Evalúa impacto y viabilidad</span>
+            </div>
+            
+            <!-- KPIs compactos inline -->
+            <div class="kpi-header-compact" id="kpiHeaderCompact">
+                <!-- KPIs se cargan dinámicamente -->
+            </div>
+            
+            <!-- Selector de modos -->
+            <div class="mode-selector">
+                <button class="current-mode-btn" onclick="toggleModeMenu()">
+                    <span class="mode-icon">📊</span>
+                    <span class="mode-name">Modo Gantt</span>
+                    <span class="mode-arrow">▼</span>
                 </button>
+                <div class="mode-menu" id="modeMenu">
+                    <div class="mode-option active" data-mode="gantt">
+                        <span class="mode-icon">📊</span>
+                        <span>Modo Gantt</span>
+                        <span class="check">✓</span>
+                    </div>
+                    <div class="mode-option" data-mode="projects" onclick="switchMode('projects')">
+                        <span class="mode-icon">📋</span>
+                        <span>Modo Proyectos</span>
+                    </div>
+                    <div class="mode-option" data-mode="simulator" onclick="switchMode('simulator')">
+                        <span class="mode-icon">⚡</span>
+                        <span>Modo Simulador</span>
+                    </div>
+                </div>
             </div>
-            <h1>Capacity Planner Netberry</h1>
-            <p class="subtitle">Dashboard Ejecutivo • Gantt + Capacidad • Actualización en tiempo real</p>
         </div>
     </div>
 
-    <!-- Breadcrumbs -->
-    <div class="breadcrumbs">
-        <a href="index.html">🏠 Inicio</a> > 
-        <span>📊 Modo Gantt</span> > 
-        <span id="currentFilter">Todos los Departamentos</span>
-    </div>
-    
-    <!-- KPIs Inteligentes con Health Score -->
-    <div class="kpi-section">
-        <div class="kpi-header">
-            <h2>📈 Health Score del Portfolio</h2>
-            <div class="health-score-display">
-                <div class="health-number" id="healthScoreNumber">87</div>
-                <div class="health-trend" id="healthTrend">↗ +3 esta semana</div>
-            </div>
-        </div>
-        <div class="kpi-grid" id="kpiGrid">
-            <!-- KPIs se cargan dinámicamente -->
-        </div>
-    </div>
-    
-    <!-- Filtros mejorados -->
-    <div class="filters-container">
-        <div class="filters-header">
-            <div class="filters-title">🔍 Filtros Inteligentes</div>
-            <div class="filters-actions">
-                <button class="quick-filter" onclick="showCriticalOnly()">🔴 Solo Críticos</button>
-                <button class="quick-filter" onclick="showAvailable()">🟢 Disponibles</button>
-                <button class="quick-filter" onclick="showAll()">📊 Ver Todo</button>
-            </div>
-        </div>
-        <div class="filter-buttons" id="filterButtons">
-            <!-- Los filtros se cargan dinámicamente -->
-        </div>
-    </div>
-    
-    <!-- Dashboard Principal -->
-    <div class="dashboard">
-        <!-- Alertas Inteligentes -->
-        <div class="smart-alerts" id="smartAlerts">
-            <!-- Se generan dinámicamente -->
-        </div>
-
-        <!-- Gantt Chart Fusionado con Alertas en Tiempo Real -->
-        <div class="chart-container gantt-container">
-            <div class="chart-header">
-                <div class="chart-title">
-                    📅 Gantt Fusionado: Proyectos + Capacidad Departamental
-                    <span class="live-indicator">🟢 LIVE</span>
+    <!-- 🎯 DASHBOARD MAXIMIZADO - GANTT PROTAGONISTA -->
+    <div class="dashboard-maximized">
+        <!-- Gantt Chart Fusionado -->
+        <div class="gantt-container-maximized">
+            <div class="gantt-header-compact">
+                <div class="gantt-title">
+                    📅 Timeline de Capacidad y Proyectos
+                    <span class="live-status">🟢 LIVE</span>
                 </div>
-                <div class="chart-actions">
-                    <button class="chart-action-btn" onclick="exportGanttPDF()">📄 Exportar PDF</button>
-                    <button class="chart-action-btn" onclick="togglePredictions()">🔮 Ver Predicciones</button>
+                
+                <!-- 🎯 FILTROS INTELIGENTES JUSTO DEBAJO DEL TÍTULO -->
+                <div class="smart-filters" id="smartFilters">
+                    <div class="filter-section">
+                        <div class="filter-label">🔍 Departamentos:</div>
+                        <div class="department-selector" id="departmentSelector">
+                            <button class="selector-toggle" onclick="toggleDepartmentDropdown()" id="selectorToggle">
+                                <span id="selectedCount">Todos (8)</span>
+                                <span class="arrow">▼</span>
+                            </button>
+                            <div class="selector-dropdown" id="selectorDropdown">
+                                <div class="dropdown-header">
+                                    <button class="select-all-btn" onclick="selectAllDepartments()">✓ Todos</button>
+                                    <button class="clear-all-btn" onclick="clearAllDepartments()">✗ Ninguno</button>
+                                </div>
+                                <div class="dropdown-options">
+                                    <label class="option-item">
+                                        <input type="checkbox" value="php" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">PHP</span>
+                                        <span class="dept-count">(3p)</span>
+                                        <span class="dept-status critical">87%</span>
+                                    </label>
+                                    <label class="option-item">
+                                        <input type="checkbox" value="dotnet" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">.NET</span>
+                                        <span class="dept-count">(3p)</span>
+                                        <span class="dept-status critical">92%</span>
+                                    </label>
+                                    <label class="option-item">
+                                        <input type="checkbox" value="devops" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">DevOps</span>
+                                        <span class="dept-count">(2p)</span>
+                                        <span class="dept-status critical">95%</span>
+                                    </label>
+                                    <label class="option-item">
+                                        <input type="checkbox" value="movilidad" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">Movilidad</span>
+                                        <span class="dept-count">(3p)</span>
+                                        <span class="dept-status warning">85%</span>
+                                    </label>
+                                    <label class="option-item">
+                                        <input type="checkbox" value="ux" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">UX-UI</span>
+                                        <span class="dept-count">(2p)</span>
+                                        <span class="dept-status good">74%</span>
+                                    </label>
+                                    <label class="option-item">
+                                        <input type="checkbox" value="pmo" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">PMO</span>
+                                        <span class="dept-count">(2p)</span>
+                                        <span class="dept-status good">68%</span>
+                                    </label>
+                                    <label class="option-item">
+                                        <input type="checkbox" value="marketing" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">Marketing</span>
+                                        <span class="dept-count">(2p)</span>
+                                        <span class="dept-status good">52%</span>
+                                    </label>
+                                    <label class="option-item">
+                                        <input type="checkbox" value="qa" checked>
+                                        <span class="checkmark">✓</span>
+                                        <span class="dept-name">QA</span>
+                                        <span class="dept-count">(2p)</span>
+                                        <span class="dept-status good">65%</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-filters">
+                            <button class="quick-filter-btn" onclick="showCriticalOnly()">🔴 Críticos</button>
+                            <button class="quick-filter-btn" onclick="showAvailable()">🟢 Disponibles</button>
+                            <button class="quick-filter-btn active" onclick="showAll()">📊 Todos</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gantt-actions">
+                    <button class="gantt-action-btn" onclick="openSimulator()">🎯 Simulador</button>
+                    <button class="gantt-action-btn" onclick="exportGanttPDF()">📄 Exportar</button>
+                    <button class="gantt-action-btn" onclick="togglePredictions()">🔮 Predicciones</button>
+                    <button class="gantt-action-btn" onclick="fullscreenGantt()">⛶ Pantalla Completa</button>
                 </div>
             </div>
+            
             <div class="gantt-chart" id="ganttChart">
                 <!-- El Gantt fusionado se genera dinámicamente -->
             </div>
-            <div class="gantt-legend" id="ganttLegend">
-                <!-- Leyenda mejorada -->
+            
+            <div class="gantt-legend-compact" id="ganttLegend">
+                <!-- Leyenda compacta -->
             </div>
         </div>
 
-        <!-- Panel de Recomendaciones IA -->
-        <div class="ai-recommendations" id="aiRecommendations">
-            <div class="recommendations-header">
+        <!-- AI Recommendations - Compactas al pie -->
+        <div class="ai-recommendations-footer" id="aiRecommendations">
+            <div class="recommendations-header-compact">
                 <h3>🤖 Recomendaciones Inteligentes</h3>
-                <div class="ai-confidence">Confianza: 94%</div>
+                <div class="ai-confidence-compact">Confianza: 94%</div>
             </div>
-            <div class="recommendations-list">
-                <!-- Se genera dinámicamente -->
+            <div class="recommendations-carousel" id="recommendationsCarousel">
+                <!-- Recomendaciones se cargan dinámicamente -->
             </div>
         </div>
     </div>
 
-    <!-- Modales existentes mantenidos -->
+    <!-- Modales mantenidos -->
     <div id="departmentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <span class="close-modal" onclick="NetberryModal.close()">&times;</span>
                 <h2 id="modalTitle">Detalle del Departamento</h2>
-                <p id="modalSubtitle">Vista detallada de recursos y asignaciones</p>
+                <p id="modalSubtitle">Vista detallada de recursos</p>
             </div>
             <div class="modal-body">
-                <div class="stats-grid" id="modalStats">
-                    <!-- Stats se generarán dinámicamente -->
-                </div>
+                <div class="stats-grid" id="modalStats"></div>
                 <h3>👥 Equipo y Asignaciones</h3>
-                <div class="people-grid" id="peopleGrid">
-                    <!-- Personas se generarán dinámicamente -->
-                </div>
+                <div class="people-grid" id="peopleGrid"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal del Simulador de Proyectos -->
     <div id="simulatorModal" class="modal">
         <div class="modal-content simulator-modal-content">
             <div class="modal-header">
                 <span class="close-modal" onclick="NetberryComponents.simulator.closeModal()">&times;</span>
                 <h2>🎯 Simulador de Impacto de Proyectos</h2>
-                <p>Evalúa la viabilidad y el impacto de nuevos proyectos en la capacidad de tus equipos</p>
+                <p>Evalúa la viabilidad y el impacto de nuevos proyectos</p>
             </div>
             <div class="modal-body">
-                <div id="simulatorModalContent">
-                    <!-- El simulador se renderiza aquí -->
-                </div>
+                <div id="simulatorModalContent"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Detalles de Proyecto -->
     <div id="projectModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <span class="close-modal" onclick="GanttChart.closeProjectModal()">&times;</span>
                 <h2 id="projectModalTitle">Detalles del Proyecto</h2>
-                <p id="projectModalSubtitle">Información completa del proyecto seleccionado</p>
+                <p id="projectModalSubtitle">Información del proyecto</p>
             </div>
             <div class="modal-body">
-                <div id="projectModalContent">
-                    <!-- Contenido del proyecto se genera dinámicamente -->
-                </div>
+                <div id="projectModalContent"></div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts modulares -->
+    <!-- Scripts -->
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/gantt/gantt_chart.js"></script>
@@ -175,14 +238,181 @@
     <script src="js/gantt/gantt_controller.js"></script>
 
     <script>
-        // Auto-inicializar el dashboard Gantt
+        // Variables globales
+        let selectedDepartments = ['php', 'dotnet', 'devops', 'movilidad', 'ux', 'pmo', 'marketing', 'qa'];
+
+        // Funciones del dropdown de departamentos
+        function toggleDepartmentDropdown() {
+            const dropdown = document.getElementById('selectorDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function selectAllDepartments() {
+            const checkboxes = document.querySelectorAll('#selectorDropdown input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = true);
+            selectedDepartments = Array.from(checkboxes).map(cb => cb.value);
+            updateSelectorDisplay();
+        }
+
+        function clearAllDepartments() {
+            const checkboxes = document.querySelectorAll('#selectorDropdown input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            selectedDepartments = [];
+            updateSelectorDisplay();
+        }
+
+        function updateSelectorDisplay() {
+            const toggle = document.getElementById('selectedCount');
+            const count = selectedDepartments.length;
+            
+            if (count === 0) {
+                toggle.textContent = 'Ninguno';
+            } else if (count === 8) {
+                toggle.textContent = 'Todos (8)';
+            } else {
+                toggle.textContent = `${count} seleccionados`;
+            }
+            
+            // Actualizar checkmarks visuales
+            document.querySelectorAll('.option-item').forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                const checkmark = item.querySelector('.checkmark');
+                if (checkbox.checked) {
+                    item.classList.add('selected');
+                    checkmark.style.opacity = '1';
+                } else {
+                    item.classList.remove('selected');
+                    checkmark.style.opacity = '0';
+                }
+            });
+        }
+
+        function toggleModeMenu() {
+            document.getElementById('modeMenu').classList.toggle('show');
+        }
+
+        function switchMode(mode) {
+            const modes = {
+                'projects': 'projects.html',
+                'simulator': 'simulator.html',
+                'gantt': 'gantt.html'
+            };
+            
+            if (modes[mode]) {
+                window.location.href = modes[mode];
+            }
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function showCriticalOnly() {
+            // Filtrar solo críticos (>85%)
+            const criticalDepts = ['php', 'dotnet', 'devops'];
+            updateQuickFilter('critical', criticalDepts);
+        }
+
+        function showAvailable() {
+            // Filtrar solo disponibles (<75%)
+            const availableDepts = ['ux', 'pmo', 'marketing'];
+            updateQuickFilter('available', availableDepts);
+        }
+
+        function showAll() {
+            // Mostrar todos
+            const allDepts = ['php', 'dotnet', 'devops', 'movilidad', 'ux', 'pmo', 'marketing', 'qa'];
+            updateQuickFilter('all', allDepts);
+        }
+
+        function updateQuickFilter(type, deptList) {
+            // Actualizar checkboxes
+            document.querySelectorAll('#selectorDropdown input[type="checkbox"]').forEach(cb => {
+                cb.checked = deptList.includes(cb.value);
+            });
+            
+            selectedDepartments = deptList;
+            updateSelectorDisplay();
+            
+            // Actualizar botones quick filter
+            document.querySelectorAll('.quick-filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Aplicar filtros
+            applyFilters();
+        }
+
+        function applyFilters() {
+            // Aquí se aplicarían los filtros al Gantt
+            console.log('Aplicando filtros:', selectedDepartments);
+            
+            // Llamar a la función de actualización del dashboard si existe
+            if (typeof NetberryComponents !== 'undefined') {
+                NetberryComponents.updateAll();
+            }
+        }
+
+        function openSimulator() {
+            if (typeof NetberryComponents !== 'undefined' && NetberryComponents.simulator) {
+                NetberryComponents.simulator.openModal();
+            }
+        }
+
+        function exportGanttPDF() {
+            console.log('Exportando Gantt a PDF');
+        }
+
+        function togglePredictions() {
+            console.log('Toggle predictions');
+        }
+
+        function fullscreenGantt() {
+            const ganttContainer = document.querySelector('.gantt-container-maximized');
+            if (ganttContainer.requestFullscreen) {
+                ganttContainer.requestFullscreen();
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('click', function(e) {
+            // Cerrar dropdown de departamentos si se hace click fuera
+            if (!e.target.closest('.department-selector')) {
+                document.getElementById('selectorDropdown').classList.remove('show');
+            }
+            
+            // Cerrar menu de modos si se hace click fuera
+            if (!e.target.closest('.mode-selector')) {
+                document.getElementById('modeMenu').classList.remove('show');
+            }
+        });
+
+        // Manejar clicks en checkboxes de departamentos
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox' && e.target.closest('#selectorDropdown')) {
+                const value = e.target.value;
+                if (e.target.checked) {
+                    if (!selectedDepartments.includes(value)) {
+                        selectedDepartments.push(value);
+                    }
+                } else {
+                    selectedDepartments = selectedDepartments.filter(dept => dept !== value);
+                }
+                updateSelectorDisplay();
+                applyFilters();
+            }
+        });
+
+        // Auto-inicializar
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 if (typeof GanttMode !== 'undefined') {
                     GanttMode.init();
-                } else {
+                } else if (typeof NetberryComponents !== 'undefined') {
                     NetberryComponents.init();
                 }
+                
+                // Inicializar display del selector
+                updateSelectorDisplay();
             }, 100);
         });
     </script>

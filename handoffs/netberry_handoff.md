@@ -132,4 +132,4 @@ console.log('Estado:', typeof NetberryComponents);
 
 ---
 
-*Handoff v2 - Gantt fusionado implementado exitosamente*
+*Handoff v2 - Gantt fusionado implementado exitosamente*.
