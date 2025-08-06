@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capacity Planner Netberry - Modo Gantt</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mode-styles.css">
+</head>
+<body>
+    <!-- Back to Home Button -->
+    <button class="back-to-home-btn" onclick="goHome()">
+        🏠 Inicio
+    </button>
+
+    <!-- Alert Banner (condicional) -->
+    <div class="alert-banner" id="alertBanner">
+        🚨 ATENCIÓN: DevOps al 94.7% de capacidad - Acción requerida
+    </div>
+
+    <!-- Header con color específico del modo -->
+    <div class="header gantt-mode">
+        <div class="header-content">
+            <div class="header-actions">
+                <div class="status-indicator" id="statusIndicator">
+                    ⚠️ Atención Requerida
+                </div>
+                <div class="mode-indicator">
+                    <span>📊</span>
+                    <span>Vista Gantt Fusionada</span>
+                </div>
+                <button class="simulator-header-btn" id="simulatorHeaderBtn">
+                    🎯 Simulador de Proyectos
+                    <span class="simulator-subtitle">Evalúa impacto y viabilidad</span>
+                </button>
+            </div>
+            <h1>Capacity Planner Netberry</h1>
+            <p class="subtitle">Dashboard Ejecutivo • Gantt + Capacidad • Actualización en tiempo real</p>
+        </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="index.html">🏠 Inicio</a> > 
+        <span>📊 Modo Gantt</span> > 
+        <span id="currentFilter">Todos los Departamentos</span>
+    </div>
+    
+    <!-- KPIs Inteligentes con Health Score -->
+    <div class="kpi-section">
+        <div class="kpi-header">
+            <h2>📈 Health Score del Portfolio</h2>
+            <div class="health-score-display">
+                <div class="health-number" id="healthScoreNumber">87</div>
+                <div class="health-trend" id="healthTrend">↗ +3 esta semana</div>
+            </div>
+        </div>
+        <div class="kpi-grid" id="kpiGrid">
+            <!-- KPIs se cargan dinámicamente -->
+        </div>
+    </div>
+    
+    <!-- Filtros mejorados -->
+    <div class="filters-container">
+        <div class="filters-header">
+            <div class="filters-title">🔍 Filtros Inteligentes</div>
+            <div class="filters-actions">
+                <button class="quick-filter" onclick="showCriticalOnly()">🔴 Solo Críticos</button>
+                <button class="quick-filter" onclick="showAvailable()">🟢 Disponibles</button>
+                <button class="quick-filter" onclick="showAll()">📊 Ver Todo</button>
+            </div>
+        </div>
+        <div class="filter-buttons" id="filterButtons">
+            <!-- Los filtros se cargan dinámicamente -->
+        </div>
+    </div>
+    
+    <!-- Dashboard Principal -->
+    <div class="dashboard">
+        <!-- Alertas Inteligentes -->
+        <div class="smart-alerts" id="smartAlerts">
+            <!-- Se generan dinámicamente -->
+        </div>
+
+        <!-- Gantt Chart Fusionado con Alertas en Tiempo Real -->
+        <div class="chart-container gantt-container">
+            <div class="chart-header">
+                <div class="chart-title">
+                    📅 Gantt Fusionado: Proyectos + Capacidad Departamental
+                    <span class="live-indicator">🟢 LIVE</span>
+                </div>
+                <div class="chart-actions">
+                    <button class="chart-action-btn" onclick="exportGanttPDF()">📄 Exportar PDF</button>
+                    <button class="chart-action-btn" onclick="togglePredictions()">🔮 Ver Predicciones</button>
+                </div>
+            </div>
+            <div class="gantt-chart" id="ganttChart">
+                <!-- El Gantt fusionado se genera dinámicamente -->
+            </div>
+            <div class="gantt-legend" id="ganttLegend">
+                <!-- Leyenda mejorada -->
+            </div>
+        </div>
+
+        <!-- Panel de Recomendaciones IA -->
+        <div class="ai-recommendations" id="aiRecommendations">
+            <div class="recommendations-header">
+                <h3>🤖 Recomendaciones Inteligentes</h3>
+                <div class="ai-confidence">Confianza: 94%</div>
+            </div>
+            <div class="recommendations-list">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales existentes mantenidos -->
+    <div id="departmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="NetberryModal.close()">&times;</span>
+                <h2 id="modalTitle">Detalle del Departamento</h2>
+                <p id="modalSubtitle">Vista detallada de recursos y asignaciones</p>
+            </div>
+            <div class="modal-body">
+                <div class="stats-grid" id="modalStats">
+                    <!-- Stats se generarán dinámicamente -->
+                </div>
+                <h3>👥 Equipo y Asignaciones</h3>
+                <div class="people-grid" id="peopleGrid">
+                    <!-- Personas se generarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal del Simulador de Proyectos -->
+    <div id="simulatorModal" class="modal">
+        <div class="modal-content simulator-modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="NetberryComponents.simulator.closeModal()">&times;</span>
+                <h2>🎯 Simulador de Impacto de Proyectos</h2>
+                <p>Evalúa la viabilidad y el impacto de nuevos proyectos en la capacidad de tus equipos</p>
+            </div>
+            <div class="modal-body">
+                <div id="simulatorModalContent">
+                    <!-- El simulador se renderiza aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles de Proyecto -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="GanttChart.closeProjectModal()">&times;</span>
+                <h2 id="projectModalTitle">Detalles del Proyecto</h2>
+                <p id="projectModalSubtitle">Información completa del proyecto seleccionado</p>
+            </div>
+            <div class="modal-body">
+                <div id="projectModalContent">
+                    <!-- Contenido del proyecto se genera dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts modulares -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/gantt/gantt-chart.js"></script>
+    <script src="js/simulator/simulator-domino.js"></script>
+    <script src="js/components-main.js"></script>
+    <script src="js/gantt-controller.js"></script>
+
+    <script>
+        // Auto-inicializar el dashboard Gantt
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (typeof GanttMode !== 'undefined') {
+                    GanttMode.init();
+                } else {
+                    NetberryComponents.init();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

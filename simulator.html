@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capacity Planner Netberry - Modo Simulador</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mode_styles.css">
+    <link rel="stylesheet" href="css/simulator_styles.css">
+</head>
+<body>
+    <!-- Back to Home Button -->
+    <button class="back-to-home-btn simulator-mode" onclick="goHome()">
+        🏠 Inicio
+    </button>
+
+    <!-- Header con color específico del modo -->
+    <div class="header simulator-mode">
+        <div class="header-content">
+            <div class="header-actions">
+                <div class="status-indicator" id="statusIndicator">
+                    🎯 Simulador Activo
+                </div>
+                <div class="mode-indicator">
+                    <span>⚡</span>
+                    <span>Análisis de Impacto</span>
+                </div>
+                <button class="scenarios-btn" id="scenariosBtn">
+                    📊 Comparar Escenarios
+                </button>
+            </div>
+            <h1>Capacity Planner Netberry</h1>
+            <p class="subtitle">Simulador de Impacto • Efecto Dominó • Análisis Predictivo • IA Decisional</p>
+        </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs simulator-mode">
+        <a href="index.html">🏠 Inicio</a> > 
+        <span>⚡ Modo Simulador</span> > 
+        <span id="currentStep">Configuración de Proyecto</span>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="simulation-progress">
+        <div class="progress-steps">
+            <div class="step active" data-step="1">
+                <div class="step-number">1</div>
+                <span>Proyecto</span>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-number">2</div>
+                <span>Recursos</span>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-number">3</div>
+                <span>Análisis</span>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-number">⚡</div>
+                <span>Efecto Dominó</span>
+            </div>
+            <div class="step" data-step="5">
+                <div class="step-number">🎯</div>
+                <span>Recomendaciones</span>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- Main Simulation Area -->
+    <div class="simulator-main">
+        <!-- Step 1: Project Configuration -->
+        <div class="simulation-step active" id="step1">
+            <div class="step-container">
+                <div class="step-header">
+                    <h2>📋 Configuración del Proyecto</h2>
+                    <p>Define las características básicas del proyecto que quieres simular</p>
+                </div>
+                
+                <div class="step-content">
+                    <div class="project-config-grid">
+                        <div class="config-section">
+                            <h3>Información Básica</h3>
+                            <div class="form-group">
+                                <label>Nombre del Proyecto</label>
+                                <input type="text" id="projectName" placeholder="Ej: Nueva App Móvil Bancaria" class="sim-input">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Duración (meses)</label>
+                                    <input type="number" id="projectDuration" min="1" max="24" value="6" class="sim-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha de Inicio</label>
+                                    <input type="date" id="projectStartDate" class="sim-input">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Presupuesto (€)</label>
+                                    <input type="number" id="projectBudget" min="0" step="1000" placeholder="150000" class="sim-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Prioridad Estratégica</label>
+                                    <select id="projectPriority" class="sim-select">
+                                        <option value="low">🔵 Baja</option>
+                                        <option value="medium" selected>🟢 Media</option>
+                                        <option value="high">🟡 Alta</option>
+                                        <option value="critical">🔴 Crítica</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="config-section">
+                            <h3>Tipo de Proyecto</h3>
+                            <div class="project-types">
+                                <div class="project-type-card" data-type="web">
+                                    <div class="type-icon">🌐</div>
+                                    <div class="type-title">Desarrollo Web</div>
+                                    <div class="type-description">Plataformas web, portales, dashboards</div>
+                                </div>
+                                <div class="project-type-card" data-type="mobile">
+                                    <div class="type-icon">📱</div>
+                                    <div class="type-title">App Móvil</div>
+                                    <div class="type-description">iOS, Android, híbridas</div>
+                                </div>
+                                <div class="project-type-card" data-type="api">
+                                    <div class="type-icon">🔌</div>
+                                    <div class="type-title">API/Backend</div>
+                                    <div class="type-description">Microservicios, integraciones</div>
+                                </div>
+                                <div class="project-type-card" data-type="infra">
+                                    <div class="type-icon">☁️</div>
+                                    <div class="type-title">Infraestructura</div>
+                                    <div class="type-description">Cloud, DevOps, migración</div>
+                                </div>
+                                <div class="project-type-card selected" data-type="custom">
+                                    <div class="type-icon">⚙️</div>
+                                    <div class="type-title">Personalizado</div>
+                                    <div class="type-description">Configuración manual</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="templates-suggestion" id="templatesSuggestion">
+                        <div class="suggestion-header">
+                            <span class="suggestion-icon">💡</span>
+                            <span class="suggestion-text">Template sugerido cargado automáticamente</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Resource Requirements -->
+        <div class="simulation-step" id="step2">
+            <div class="step-container">
+                <div class="step-header">
+                    <h2>👥 Requisitos de Recursos</h2>
+                    <p>Define las horas necesarias por departamento para este proyecto</p>
+                </div>
+                
+                <div class="step-content">
+                    <div class="resources-grid" id="resourcesGrid">
+                        <!-- Se genera dinámicamente -->
+                    </div>
+                    
+                    <div class="resources-summary">
+                        <div class="summary-card">
+                            <div class="summary-label">Total Horas</div>
+                            <div class="summary-value" id="totalHours">0h</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Coste Estimado</div>
+                            <div class="summary-value" id="estimatedCost">€0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Departamentos</div>
+                            <div class="summary-value" id="involvedDepts">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Impact Analysis -->
+        <div class="simulation-step" id="step3">
+            <div class="step-container">
+                <div class="step-header">
+                    <h2>📊 Análisis de Impacto Inmediato</h2>
+                    <p>Impacto directo en la capacidad de cada departamento</p>
+                </div>
+                
+                <div class="step-content">
+                    <div class="impact-grid" id="impactGrid">
+                        <!-- Se genera dinámicamente -->
+                    </div>
+                    
+                    <div class="viability-assessment">
+                        <div class="viability-card" id="viabilityCard">
+                            <div class="viability-icon">⚖️</div>
+                            <div class="viability-content">
+                                <div class="viability-title">Evaluación de Viabilidad</div>
+                                <div class="viability-status" id="viabilityStatus">Calculando...</div>
+                                <div class="viability-score" id="viabilityScore">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Domino Effect -->
+        <div class="simulation-step" id="step4">
+            <div class="step-container">
+                <div class="step-header">
+                    <h2>⚡ Análisis de Efecto Dominó</h2>
+                    <p>Impacto temporal en proyectos existentes y capacidad futura</p>
+                </div>
+                
+                <div class="step-content">
+                    <div class="domino-visualization" id="dominoViz">
+                        <!-- Visualización del efecto dominó -->
+                    </div>
+                    
+                    <div class="affected-projects" id="affectedProjects">
+                        <!-- Lista de proyectos afectados -->
+                    </div>
+                    
+                    <div class="risk-assessment">
+                        <div class="risk-metrics" id="riskMetrics">
+                            <!-- Métricas de riesgo -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: AI Recommendations -->
+        <div class="simulation-step" id="step5">
+            <div class="step-container">
+                <div class="step-header">
+                    <h2>🤖 Recomendaciones Inteligentes</h2>
+                    <p>Estrategias optimizadas generadas por IA para maximizar el éxito</p>
+                </div>
+                
+                <div class="step-content">
+                    <div class="recommendations-dashboard">
+                        <div class="executive-summary" id="executiveSummary">
+                            <!-- Resumen ejecutivo -->
+                        </div>
+                        
+                        <div class="recommendations-grid" id="recommendationsGrid">
+                            <!-- Grid de recomendaciones -->
+                        </div>
+                        
+                        <div class="scenario-comparison" id="scenarioComparison">
+                            <!-- Comparación de escenarios -->
+                        </div>
+                        
+                        <div class="action-plan" id="actionPlan">
+                            <!-- Plan de acción -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="simulator-navigation">
+        <div class="nav-left">
+            <button class="nav-btn secondary" id="prevBtn" onclick="SimulatorMode.previousStep()" disabled>
+                ← Anterior
+            </button>
+        </div>
+        
+        <div class="nav-center">
+            <div class="step-indicator">
+                Paso <span id="currentStepNumber">1</span> de 5
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <button class="nav-btn primary" id="nextBtn" onclick="SimulatorMode.nextStep()">
+                Siguiente →
+            </button>
+        </div>
+    </div>
+
+   
+    <!-- Scenarios Comparison Modal -->
+    <div id="scenariosModal" class="modal">
+        <div class="modal-content scenarios-modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="SimulatorMode.closeScenariosModal()">&times;</span>
+                <h2>📊 Comparación de Escenarios</h2>
+                <p>Analiza múltiples escenarios simultáneamente para tomar la mejor decisión</p>
+            </div>
+            <div class="modal-body">
+                <div id="scenariosComparison">
+                    <!-- Comparación de escenarios -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/simulator/simulator_core.js"></script>
+    <script src="js/simulator/simulator_steps.js"></script>
+    <script src="js/simulator/simulator_analysis.js"></script>
+    <script src="js/simulator/simulator_main.js"></script>
+
+    <script>
+        // Auto-inicializar el Modo Simulador
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (typeof SimulatorMode !== 'undefined') {
+                    SimulatorMode.init();
+                } else {
+                    console.error('SimulatorMode no está disponible');
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capacity Planning - Netberry Enhanced</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-actions">
+                <div class="status-indicator" id="statusIndicator">
+                    ⚠️ Atención Requerida
+                </div>
+                <button class="simulator-header-btn" id="simulatorHeaderBtn">
+                    🎯 Simulador de Proyectos
+                    <span class="simulator-subtitle">Evalúa impacto y viabilidad</span>
+                </button>
+            </div>
+            <h1>Capacity Planning</h1>
+            <p class="subtitle">Netberry • Dashboard Ejecutivo • Actualización en tiempo real</p>
+        </div>
+    </div>
+    
+    <div class="filters-container">
+        <div class="filters-title">🔍 Filtros por Departamento</div>
+        <div class="filter-buttons" id="filterButtons">
+            <!-- Los filtros se cargan dinámicamente -->
+        </div>
+    </div>
+    
+    <div class="dashboard">
+        <!-- Gantt Chart Fusionado - ACTUALIZADO -->
+        <div class="chart-container gantt-container">
+            <div class="chart-header">
+                <div class="chart-title" id="ganttChartTitle">
+                    📅 Gantt de Proyectos y Capacidad Departamental
+                </div>
+                <!-- ↓ ELIMINADO: Controles duplicados, ahora están dentro del Gantt -->
+            </div>
+            <div class="gantt-chart" id="ganttChart">
+                <!-- El Gantt fusionado se genera dinámicamente con controles integrados -->
+            </div>
+            <div class="gantt-legend" id="ganttLegend">
+                <!-- La leyenda se genera dinámicamente -->
+            </div>
+        </div>
+
+      
+
+    <!-- Modal para vista detallada de departamentos -->
+    <div id="departmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="NetberryModal.close()">&times;</span>
+                <h2 id="modalTitle">Detalle del Departamento</h2>
+                <p id="modalSubtitle">Vista detallada de recursos y asignaciones</p>
+            </div>
+            <div class="modal-body">
+                <div class="stats-grid" id="modalStats">
+                    <!-- Stats se generarán dinámicamente -->
+                </div>
+                <h3 style="margin: 25px 0 15px; color: var(--dark);">👥 Equipo y Asignaciones</h3>
+                <div class="people-grid" id="peopleGrid">
+                    <!-- Personas se generarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal del Simulador de Proyectos -->
+    <div id="simulatorModal" class="modal">
+        <div class="modal-content simulator-modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="NetberryComponents.simulator.closeModal()">&times;</span>
+                <h2>🎯 Simulador de Impacto de Proyectos</h2>
+                <p>Evalúa la viabilidad y el impacto de nuevos proyectos en la capacidad de tus equipos</p>
+            </div>
+            <div class="modal-body">
+                <!-- Simulador content se carga dinámicamente aquí -->
+                <div id="simulatorModalContent">
+                    <!-- El simulador se renderiza aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles de Proyecto -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-modal" onclick="GanttChart.closeProjectModal()">&times;</span>
+                <h2 id="projectModalTitle">Detalles del Proyecto</h2>
+                <p id="projectModalSubtitle">Información completa del proyecto seleccionado</p>
+            </div>
+            <div class="modal-body">
+                <div id="projectModalContent">
+                    <!-- Contenido del proyecto se genera dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts modulares -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <!-- Módulos especializados -->
+    <script src="js/gantt/gantt-chart.js"></script>
+    <script src="js/simulator/simulator-domino.js"></script>
+    
+    <!-- Coordinador principal -->
+    <script src="js/components-main.js"></script>
+
+<script>
+// Auto-inicializar el dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        NetberryComponents.init();
+    }, 100);
+});
+</script>
+
+</body>
+</html>
