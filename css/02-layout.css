@@ -156,9 +156,10 @@
     border-color: rgba(239, 68, 68, 0.3);
 }
 
-/* Selector de modos */
+/* Selector de modos - CORREGIDO */
 .mode-selector {
     position: relative;
+    z-index: 2000; /* ← CORREGIDO: z-index alto para que esté encima de todo */
 }
 
 .current-mode-btn {
@@ -174,6 +175,8 @@
     transition: all 0.3s ease;
     font-weight: 600;
     min-width: 150px;
+    position: relative; /* ← CORREGIDO: Para que funcione el z-index */
+    z-index: 2001;
 }
 
 .current-mode-btn:hover {
@@ -199,20 +202,23 @@
 }
 
 .mode-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
+    position: absolute; /* ← CORREGIDO: Mantener absolute */
+    top: calc(100% + 4px); /* ← CORREGIDO: Posición fija relativa al botón */
+    left: 0; /* ← CORREGIDO: Alineado a la izquierda del botón */
+    right: auto; /* ← CORREGIDO: No forzar ancho */
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); /* ← CORREGIDO: Sombra más fuerte */
+    z-index: 2002; /* ← CORREGIDO: z-index muy alto */
     min-width: 200px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
-    margin-top: 5px;
+    overflow: hidden;
+    /* ← CORREGIDO: Posicionamiento fijo para responsive */
+    white-space: nowrap;
 }
 
 .mode-menu.show {
@@ -817,6 +823,8 @@
     
     .mode-selector {
         order: -1;
+        /* ← CORREGIDO: Mantener z-index en responsive */
+        z-index: 2000;
     }
     
     .current-mode-btn {
@@ -826,6 +834,15 @@
     
     .mode-name {
         display: none;
+    }
+    
+    /* ← CORREGIDO: Dropdown responsive mejorado */
+    .mode-menu {
+        left: 0;
+        right: auto;
+        min-width: 180px;
+        /* Asegurar que no se salga de la pantalla */
+        max-width: calc(100vw - 30px);
     }
     
     .dashboard-maximized {
@@ -839,6 +856,9 @@
     .smart-filters {
         padding: 15px;
         margin: 10px 0 20px 0;
+        /* ← CORREGIDO: z-index menor que el selector de modos */
+        position: relative;
+        z-index: 100;
     }
     
     .quick-filters {
@@ -895,6 +915,19 @@
         padding: 6px 10px;
     }
     
+    /* ← CORREGIDO: Dropdown móvil mejorado */
+    .mode-menu {
+        /* En móvil, usar posición fija para evitar problemas */
+        position: fixed;
+        top: 60px; /* Justo debajo del header */
+        left: 10px;
+        right: 10px;
+        width: auto;
+        min-width: auto;
+        max-width: none;
+        z-index: 9999; /* z-index muy alto para móvil */
+    }
+    
     .dashboard-maximized {
         padding: 10px;
     }
@@ -924,6 +957,7 @@
         width: 90vw;
         max-width: 350px;
         max-height: 70vh;
+        z-index: 10000; /* ← CORREGIDO: z-index para estar encima del selector de modos */
     }
     
     .quick-filters {
