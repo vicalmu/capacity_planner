@@ -1,0 +1,264 @@
+/* css/layout/headers.css - Headers y Navegación */
+/* Extraído de 02-layout.css - Módulo especializado en headers */
+
+/* === HEADER ORIGINAL MANTENIDO === */
+.header {
+    background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 100%);
+    color: white;
+    padding: 25px 30px;
+    box-shadow: 0 4px 30px rgba(255, 107, 53, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 40%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.05);
+    transform: rotate(35deg);
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+}
+
+.header h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.header .subtitle {
+    opacity: 0.95;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* Header Actions */
+.header-actions {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.status-indicator {
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
+}
+
+/* === SMART HEADER PARA GANTT === */
+.smart-header {
+    background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 100%);
+    color: white;
+    padding: 12px 30px;
+    box-shadow: 0 2px 20px rgba(255, 107, 53, 0.3);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 100;
+}
+
+.header-content-smart {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    gap: 25px;
+    align-items: center;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* === HEADER BRAND === */
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.back-home-icon {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.back-home-icon:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+.header-brand h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* === HEADER INDICATORS === */
+.header-indicators {
+    display: flex;
+    gap: 15px;
+    justify-self: start;
+}
+
+.health-compact,
+.alerts-compact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 60px;
+}
+
+.health-compact:hover,
+.alerts-compact:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.health-number-compact,
+.alerts-number-compact {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.health-label-compact,
+.alerts-label-compact {
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.alerts-compact {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* === KPIs COMPACTOS EN HEADER === */
+.kpi-header-compact {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.kpi-compact {
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 3px solid;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+    backdrop-filter: blur(10px);
+}
+
+.kpi-value-compact {
+    font-size: 16px;
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+}
+
+.kpi-label-compact {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+/* === RESPONSIVE PARA HEADERS === */
+@media (max-width: 1200px) {
+    .header-content-smart {
+        grid-template-columns: auto auto 1fr auto;
+        gap: 15px;
+    }
+    
+    .header-indicators {
+        gap: 10px;
+    }
+    
+    .kpi-header-compact {
+        display: none;
+    }
+    
+    .header-actions {
+        position: static;
+        margin-top: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .smart-header {
+        padding: 10px 15px;
+    }
+    
+    .header-content-smart {
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+    }
+    
+    .header-brand h1 {
+        font-size: 18px;
+    }
+    
+    .header-indicators {
+        display: none;
+    }
+    
+    .header {
+        padding: 20px;
+    }
+    
+    .header h1 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .smart-header {
+        padding: 8px 10px;
+    }
+    
+    .header-brand {
+        gap: 8px;
+    }
+    
+    .back-home-icon {
+        padding: 6px;
+        font-size: 14px;
+    }
+    
+    .header-brand h1 {
+        font-size: 16px;
+    }
+}

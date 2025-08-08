@@ -1,0 +1,80 @@
+/* css/layout/containers.css - Layout y Containers Principales */
+/* Extraído de 02-layout.css - Módulo especializado en estructura de layout */
+
+/* === DASHBOARD PRINCIPAL === */
+.dashboard {
+    padding: var(--space-3xl) 30px;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.dashboard-maximized {
+    padding: 20px 30px 30px 30px;
+    margin-left: 0;
+    transition: margin-left 0.4s ease;
+    max-width: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1; /* ← CLAVE: z-index bajo para no interferir con dropdowns */
+}
+
+/* === MAIN CONTENT GRID === */
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-3xl);
+    margin-bottom: var(--space-3xl);
+}
+
+/* === CONTAINERS GENERALES === */
+.chart-container,
+.gantt-container {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-3xl);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.chart-container:hover,
+.gantt-container:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+/* === GANTT CONTAINERS ESPECIALIZADOS === */
+.gantt-container-maximized {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    border: 1px solid #f1f5f9;
+    position: relative;
+    z-index: 1; /* ← CLAVE: z-index bajo */
+}
+
+.gantt-header-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px; /* ← OPTIMIZADO: reducido para más espacio */
+    padding-bottom: 10px; /* ← OPTIMIZADO: reducido para más espacio */
+    border-bottom: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.gantt-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-status {
+    color: #10b981;
+    font-weight: 700;
+    font-size: 12px;

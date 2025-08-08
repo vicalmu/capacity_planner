@@ -156,10 +156,10 @@
     border-color: rgba(239, 68, 68, 0.3);
 }
 
-/* Selector de modos - CORREGIDO */
+/* Selector de modos - CORREGIDO CORRECTAMENTE */
 .mode-selector {
     position: relative;
-    z-index: 2000; /* ← CORREGIDO: z-index alto para que esté encima de todo */
+    z-index: 9999;
 }
 
 .current-mode-btn {
@@ -175,8 +175,8 @@
     transition: all 0.3s ease;
     font-weight: 600;
     min-width: 150px;
-    position: relative; /* ← CORREGIDO: Para que funcione el z-index */
-    z-index: 2001;
+    position: relative;
+    z-index: 9999;
 }
 
 .current-mode-btn:hover {
@@ -202,22 +202,21 @@
 }
 
 .mode-menu {
-    position: absolute; /* ← CORREGIDO: Mantener absolute */
-    top: calc(100% + 4px); /* ← CORREGIDO: Posición fija relativa al botón */
-    left: 0; /* ← CORREGIDO: Alineado a la izquierda del botón */
-    right: auto; /* ← CORREGIDO: No forzar ancho */
+    position: absolute; /* ← CORREGIDO: Volver a absolute */
+    top: calc(100% + 8px); /* ← CORREGIDO: Relativo al botón */
+    right: 0; /* ← CORREGIDO: Alineado a la derecha del botón */
+    left: auto; /* ← CORREGIDO: No forzar izquierda */
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); /* ← CORREGIDO: Sombra más fuerte */
-    z-index: 2002; /* ← CORREGIDO: z-index muy alto */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    z-index: 10000; /* ← CORREGIDO: z-index máximo */
     min-width: 200px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
     overflow: hidden;
-    /* ← CORREGIDO: Posicionamiento fijo para responsive */
     white-space: nowrap;
 }
 
@@ -330,6 +329,8 @@
     max-width: 1800px;
     margin-left: auto;
     margin-right: auto;
+    position: relative;  /* ← AÑADIR */
+    z-index: 1;          /* ← AÑADIR */
 }
 
 /* === MAIN CONTENT GRID === */
@@ -711,7 +712,324 @@
     box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
 }
 
-/* AI Recommendations Footer */
+/* === FILTROS AL FINAL - LAYOUT HORIZONTAL === */
+.smart-filters-bottom {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin: 15px 0 0 0;
+}
+
+.smart-filters-bottom .filter-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: nowrap; /* No permitir wrap en desktop */
+}
+
+.smart-filters-bottom .filter-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+}
+
+/* Nuevos selectores para layout horizontal */
+.filter-select {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    min-width: 70px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-select:hover {
+    border-color: #cbd5e1;
+}
+
+.filter-select:focus {
+    border-color: var(--primary-orange);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+/* Vista Toggle Inline */
+.view-toggle-group {
+    display: flex;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.view-toggle {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.view-toggle:hover:not(.active) {
+    background: #f8fafc;
+    color: #374151;
+}
+
+.view-toggle.active {
+    background: var(--primary-orange);
+    color: white;
+}
+
+/* Ajuste del selector de departamentos para layout horizontal */
+.smart-filters-bottom .department-selector {
+    min-width: 150px;
+    flex-shrink: 0;
+}
+
+.smart-filters-bottom .selector-toggle {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+/* Quick filters inline compacto */
+.smart-filters-bottom .quick-filters {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.smart-filters-bottom .quick-filter-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* === SELECTOR DE DEPARTAMENTOS AL FINAL === */
+.smart-filters-bottom .selector-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #374151;
+    width: 100%;
+}
+
+.smart-filters-bottom .selector-toggle:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.smart-filters-bottom .selector-toggle:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    outline: none;
+}
+
+.smart-filters-bottom .selector-toggle .arrow {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.smart-filters-bottom .selector-dropdown.show .selector-toggle .arrow {
+    transform: rotate(180deg);
+}
+
+/* Dropdown para filtros al final */
+.smart-filters-bottom .selector-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 5000; /* ← z-index menor que el selector de modos pero suficiente */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    margin-top: 4px;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.smart-filters-bottom .selector-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.smart-filters-bottom .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #f8fafc;
+}
+
+.smart-filters-bottom .select-all-btn,
+.smart-filters-bottom .clear-all-btn {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.smart-filters-bottom .select-all-btn {
+    color: #059669;
+    border-color: #10b981;
+}
+
+.smart-filters-bottom .select-all-btn:hover {
+    background: #f0fdf4;
+    border-color: #059669;
+}
+
+.smart-filters-bottom .clear-all-btn {
+    color: #dc2626;
+    border-color: #ef4444;
+}
+
+.smart-filters-bottom .clear-all-btn:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+}
+
+.smart-filters-bottom .dropdown-options {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.smart-filters-bottom .option-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    margin-bottom: 2px;
+}
+
+.smart-filters-bottom .option-item:hover {
+    background: #f8fafc;
+}
+
+.smart-filters-bottom .option-item.selected {
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+}
+
+.smart-filters-bottom .option-item input[type="checkbox"] {
+    display: none;
+}
+
+.smart-filters-bottom .checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    color: #10b981;
+    transition: all 0.2s ease;
+    opacity: 0;
+    background: white;
+}
+
+.smart-filters-bottom .option-item.selected .checkmark {
+    border-color: #10b981;
+    background: #10b981;
+    color: white;
+    opacity: 1;
+}
+
+.smart-filters-bottom .dept-name {
+    font-weight: 600;
+    color: #374151;
+    flex: 1;
+}
+
+.smart-filters-bottom .dept-count {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.smart-filters-bottom .dept-status {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 40px;
+}
+
+.smart-filters-bottom .dept-status.critical {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.smart-filters-bottom .dept-status.warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.smart-filters-bottom .dept-status.good {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+/* === GANTT CHART CON MÁXIMO ESPACIO === */
+.gantt-chart {
+    min-height: 60vh; /* ← CORREGIDO: Mínimo 60% de la pantalla */
+    margin: 20px 0;
+}
+
+/* === HEADER COMPACTO PARA MÁS ESPACIO === */
+.gantt-header-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* ← REDUCIDO: de 20px a 15px */
+    padding-bottom: 10px; /* ← REDUCIDO: de 15px a 10px */
+    border-bottom: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* === AI RECOMMENDATIONS === */
 .ai-recommendations-footer {
     background: linear-gradient(135deg, #f8fafc, #ffffff);
     border-radius: 16px;
@@ -765,8 +1083,17 @@
     border-color: #e2e8f0;
 }
 
-/* === RESPONSIVE LAYOUT === */
+/* === RESPONSIVE PARA FILTROS AL FINAL === */
 @media (max-width: 1200px) {
+    .smart-filters-bottom .filter-section {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .smart-filters-bottom .department-selector {
+        min-width: 120px;
+    }
+    
     .header-content-smart {
         grid-template-columns: auto auto 1fr auto;
         gap: 15px;
@@ -804,6 +1131,39 @@
 }
 
 @media (max-width: 768px) {
+    .smart-filters-bottom {
+        padding: 12px 15px;
+        margin: 10px 0 0 0;
+    }
+    
+    .smart-filters-bottom .filter-section {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .smart-filters-bottom .filter-label {
+        font-size: 13px;
+    }
+    
+    .filter-select {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    
+    .view-toggle {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    
+    .smart-filters-bottom .quick-filter-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    
+    .gantt-chart {
+        min-height: 50vh; /* ← Menor en móviles */
+    }
+    
     .smart-header {
         padding: 10px 15px;
     }
@@ -894,6 +1254,47 @@
 }
 
 @media (max-width: 480px) {
+    .smart-filters-bottom .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .smart-filters-bottom .filter-label {
+        text-align: center;
+        font-size: 12px;
+    }
+    
+    .filter-select,
+    .view-toggle-group,
+    .smart-filters-bottom .department-selector {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .smart-filters-bottom .quick-filters {
+        justify-content: space-between;
+    }
+    
+    .smart-filters-bottom .quick-filter-btn {
+        flex: 1;
+    }
+    
+    .smart-filters-bottom .selector-dropdown.show {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90vw;
+        max-width: 350px;
+        max-height: 70vh;
+        z-index: 9000; /* ← z-index alto pero menor que el selector de modos */
+    }
+    
+    .gantt-chart {
+        min-height: 45vh;
+    }
+    
     .smart-header {
         padding: 8px 10px;
     }
@@ -917,7 +1318,7 @@
     
     /* ← CORREGIDO: Dropdown móvil mejorado */
     .mode-menu {
-        /* En móvil, usar posición fija para evitar problemas */
+        /* En móvil, mantener posición fija pero ajustada */
         position: fixed;
         top: 60px; /* Justo debajo del header */
         left: 10px;
@@ -925,7 +1326,7 @@
         width: auto;
         min-width: auto;
         max-width: none;
-        z-index: 9999; /* z-index muy alto para móvil */
+        z-index: 10000; /* z-index máximo para móvil */
     }
     
     .dashboard-maximized {
@@ -1001,4 +1402,408 @@
 
 .recommendations-carousel::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
+}
+
+/* === ANIMACIONES Y TRANSICIONES === */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.gantt-container-maximized {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.selector-dropdown.show {
+    animation: slideDown 0.3s ease-out;
+}
+
+.mode-menu.show {
+    animation: slideDown 0.3s ease-out;
+}
+
+/* === ACCESIBILIDAD === */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* === FOCUS STATES MEJORADOS === */
+.selector-toggle:focus-visible,
+.filter-select:focus-visible,
+.view-toggle:focus-visible,
+.quick-filter-btn:focus-visible,
+.gantt-action-btn:focus-visible {
+    outline: 2px solid var(--primary-orange);
+    outline-offset: 2px;
+}
+
+/* === ESTADOS DE LOADING === */
+.gantt-chart.loading {
+    position: relative;
+    opacity: 0.7;
+}
+
+.gantt-chart.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid var(--primary-orange);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* === UTILIDADES ADICIONALES === */
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* === PRINT STYLES === */
+@media print {
+    .header-actions,
+    .gantt-actions,
+    .smart-filters-bottom,
+    .ai-recommendations-footer {
+        display: none !important;
+    }
+    
+    .gantt-container-maximized {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+    
+    .gantt-chart {
+        min-height: auto;
+        page-break-inside: avoid;
+    }
+}
+
+/* Estilos para el selector de departamentos en línea con Año y Vista */
+
+/* Contenedor de controles del Gantt */
+.gantt-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.gantt-control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Estilos para selectores de año y trimestre */
+.year-selector,
+.quarter-selector {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.year-selector:hover,
+.quarter-selector:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.year-selector:focus,
+.quarter-selector:focus {
+    border-color: var(--primary-orange);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+/* Etiquetas de control */
+.year-label,
+.view-label,
+.quarter-label,
+.dept-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4b5563;
+    white-space: nowrap;
+}
+
+/* Botones de vista */
+.view-toggle {
+    display: flex;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.view-btn {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.view-btn:hover:not(.active) {
+    background: #f8fafc;
+    color: #374151;
+}
+
+.view-btn.active {
+    background: var(--primary-orange);
+    color: white;
+}
+
+/* Selector de departamentos en línea */
+.department-selector-inline {
+    position: relative;
+    margin-left: auto;
+}
+
+.department-selector-inline .selector-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #374151;
+    font-size: 13px;
+    min-width: 150px;
+}
+
+.department-selector-inline .selector-toggle:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.department-selector-inline .selector-toggle:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    outline: none;
+}
+
+.department-selector-inline .selector-toggle .arrow {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.department-selector-inline .selector-dropdown.show .selector-toggle .arrow {
+    transform: rotate(180deg);
+}
+
+/* Dropdown en línea con controles */
+.department-selector-inline .selector-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    width: 280px;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.department-selector-inline .selector-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Responsive para controles en línea */
+@media (max-width: 1200px) {
+    .gantt-controls {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .department-selector-inline {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .department-selector-inline .selector-toggle {
+        width: 100%;
+    }
+    
+    .department-selector-inline .selector-dropdown {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .gantt-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .gantt-control-group {
+        width: 100%;
+    }
+    
+    .year-selector,
+    .quarter-selector,
+    .view-toggle {
+        width: 100%;
+    }
+    
+    .year-label,
+    .view-label,
+    .quarter-label,
+    .dept-label {
+        width: 120px;
+    }
+    
+    .department-selector-inline .selector-dropdown {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90vw;
+        max-width: 350px;
+        max-height: 70vh;
+    }
+}
+
+/* SELECTOR DE MODOS - CORRECCIÓN SIMPLE Y DIRECTA */
+
+.mode-selector {
+    position: relative;
+    z-index: 999999; /* ← Z-INDEX MÁXIMO */
+}
+
+.mode-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: auto;
+    right: 0; /* ← Alineado a la derecha del botón */
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); /* ← SOMBRA MÁS FUERTE */
+    z-index: 999999; /* ← Z-INDEX SÚPER ALTO */
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* RESPONSIVE: En pantallas pequeñas, centrar el dropdown */
+@media (max-width: 768px) {
+    .mode-menu {
+        position: fixed; /* ← FIXED para móviles */
+        top: 70px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%) translateY(-10px);
+        width: 200px;
+        z-index: 999999;
+    }
+    
+    .mode-menu.show {
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* En tablets, mantener a la izquierda */
+@media (max-width: 1200px) and (min-width: 769px) {
+    .mode-menu {
+        left: 0;
+        right: auto;
+    }
+}
+
+/* CORRECCIÓN PARA PANTALLAS GRANDES */
+@media (min-width: 769px) {
+    .mode-menu {
+        position: absolute !important;
+        left: auto !important;
+        right: 0 !important;
+        transform: none !important;
+        z-index: 999999 !important;
+    }
+}
+
+/* MANTENER FUNCIONANDO EN MÓVIL */
+@media (max-width: 768px) {
+    .mode-menu {
+        position: fixed !important;
+        top: 70px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+        z-index: 999999 !important;
+    }
 }

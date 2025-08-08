@@ -151,6 +151,36 @@ const GanttUIController = {
         }
     },
 
+    // === NUEVOS CONTROLES HORIZONTALES ===
+    updateYear: function() {
+        const yearSelector = document.getElementById('yearSelector');
+        const selectedYear = yearSelector.value;
+        console.log('Año cambiado a:', selectedYear);
+        
+        // Actualizar datos del Gantt para el año seleccionado
+        if (typeof GanttChart !== 'undefined') {
+            GanttChart.setYear(selectedYear);
+            GanttChart.render();
+        }
+    },
+
+    changeView: function(viewType) {
+        // Actualizar botones activos
+        document.querySelectorAll('.view-toggle').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        document.querySelector(`[data-view="${viewType}"]`).classList.add('active');
+        
+        console.log('Vista cambiada a:', viewType);
+        
+        // Actualizar vista del Gantt
+        if (typeof GanttChart !== 'undefined') {
+            GanttChart.setView(viewType);
+            GanttChart.render();
+        }
+    },
+
     // === SELECTOR DE MODOS ===
     toggleModeMenu: function() {
         document.getElementById('modeMenu').classList.toggle('show');
@@ -311,6 +341,15 @@ function togglePredictions() {
 
 function fullscreenGantt() {
     GanttUIController.fullscreenGantt();
+}
+
+// Nuevas funciones globales para controles horizontales
+function updateYear() {
+    GanttUIController.updateYear();
+}
+
+function changeView(viewType) {
+    GanttUIController.changeView(viewType);
 }
 
 // Auto-inicialización

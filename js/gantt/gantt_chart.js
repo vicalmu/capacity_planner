@@ -1,4 +1,4 @@
-// js/gantt/gantt-chart.js - Gantt Chart con Capacidad Departamental Integrada
+// js/gantt/gantt-chart.js - Gantt Chart con Dropdown de Departamentos CORREGIDO
 
 const GanttChart = {
     
@@ -78,7 +78,7 @@ const GanttChart = {
                             // CORREGIDO: Usar posición anual para calcular el ancho correcto
                             const pos = NetberryData.calculations.getProjectTimelinePosition(projectInPeriod, year);
                             
-                            if (isQuarterly) {
+                            if (isQuarterly) { 
                                 // Para vista trimestral, verificar si es el primer período visible del proyecto
                                 const quarterStartMonth = (parseInt(NetberryData.config.selectedQuarter.substring(1)) - 1) * 3;
                                 const absoluteMonth = quarterStartMonth + period;
@@ -151,10 +151,24 @@ const GanttChart = {
         }
     },
 
+    // *** FUNCIÓN RENDERCONTROLS CORREGIDA CON EVENTOS FUNCIONALES ***
     renderControls: function(year, quarter, isQuarterly) {
         const years = [2024, 2025, 2026, 2027, 2028];
         const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
         
+        // Obtener departamentos actuales
+        const departments = Object.entries(NetberryData.departments);
+        const activeFilters = NetberryUtils.activeFilters || ['all'];
+        const filteredDepts = activeFilters.includes('all') ? 
+            departments.map(([key]) => key) : activeFilters;
+        
+        // Calcular conteo para mostrar
+        const selectedCount = activeFilters.includes('all') ? departments.length : activeFilters.length;
+        const displayText = activeFilters.includes('all') ? 
+            `Todos (${departments.length})` : 
+            selectedCount === 0 ? 'Ninguno' : 
+            `${selectedCount} seleccionados`;
+
         return `
             <div class="gantt-controls">
                 <div class="gantt-control-group">
@@ -188,6 +202,40 @@ const GanttChart = {
                         </select>
                     </div>
                 ` : ''}
+                
+                <!-- *** SELECTOR DE DEPARTAMENTOS CORREGIDO *** -->
+                <div class="gantt-control-group department-selector-inline">
+                    <label class="dept-label">Departamentos:</label>
+                    <div class="selector-toggle" id="departmentToggle">
+                        <span id="selectedCount">${displayText}</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="selector-dropdown" id="selectorDropdown">
+                        <div class="dropdown-header">
+                            <button class="select-all-btn" id="selectAllBtn">Seleccionar Todos</button>
+                            <button class="clear-all-btn" id="clearAllBtn">Limpiar</button>
+                        </div>
+                        <div class="dropdown-options" id="dropdownOptions">
+                            ${departments.map(([key, dept]) => {
+                                const isSelected = activeFilters.includes('all') || activeFilters.includes(key);
+                                return `
+                                    <div class="option-item ${isSelected ? 'selected' : ''}" data-dept="${key}">
+                                        <input type="checkbox" id="dept-${key}" value="${key}" ${isSelected ? 'checked' : ''}>
+                                        <div class="checkmark">✓</div>
+                                        <label for="dept-${key}" class="dept-name">${dept.name}</label>
+                                        <span class="dept-count">${dept.people.length}p</span>
+                                        ${dept.utilization > 95 ? 
+                                            `<span class="dept-status critical">${Math.round(dept.utilization)}%</span>` : 
+                                            dept.utilization > 85 ? 
+                                            `<span class="dept-status warning">${Math.round(dept.utilization)}%</span>` : 
+                                            `<span class="dept-status good">${Math.round(dept.utilization)}%</span>`
+                                        }
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     },
@@ -277,51 +325,6 @@ const GanttChart = {
         } else {
             // Lógica para meses anuales
             return index === currentMonth;
-        }
-    },
-
-    getProjectTimelinePosition: function(project, year, isQuarterly) {
-        const projectStart = new Date(project.startDate);
-        const projectEnd = new Date(project.endDate);
-        const yearStart = new Date(year, 0, 1);
-        const yearEnd = new Date(year, 11, 31);
-
-        // Si el proyecto no intersecta con el año, retornar null
-        if (projectEnd < yearStart || projectStart > yearEnd) {
-            return null;
-        }
-
-        // Obtener meses de inicio y fin limitados al año
-        const startMonth = Math.max(0, projectStart.getMonth() - (projectStart.getFullYear() - year) * 12);
-        const endMonth = Math.min(11, projectEnd.getMonth() + (year - projectEnd.getFullYear()) * 12);
-        
-        const displayStartMonth = projectStart.getFullYear() < year ? 0 : startMonth;
-        const displayEndMonth = projectEnd.getFullYear() > year ? 11 : endMonth;
-
-        if (isQuarterly) {
-            // Para vista trimestral, convertir meses a períodos de trimestre
-            const quarter = NetberryData.config.selectedQuarter || 'Q1';
-            const quarterStart = (parseInt(quarter.substring(1)) - 1) * 3;
-            const quarterEnd = quarterStart + 2;
-            
-            // Si el proyecto no intersecta con el trimestre, retornar null
-            if (displayEndMonth < quarterStart || displayStartMonth > quarterEnd) return null;
-            
-            const startPeriod = Math.max(0, displayStartMonth - quarterStart);
-            const endPeriod = Math.min(2, displayEndMonth - quarterStart);
-            
-            return {
-                startPeriod: startPeriod,
-                endPeriod: endPeriod,
-                duration: endPeriod - startPeriod + 1
-            };
-        } else {
-            // Vista anual (como antes)
-            return {
-                startPeriod: displayStartMonth,
-                endPeriod: displayEndMonth,
-                duration: displayEndMonth - displayStartMonth + 1
-            };
         }
     },
 
@@ -419,7 +422,11 @@ const GanttChart = {
         `;
     },
 
+    // *** EVENTOS CORREGIDOS CON DROPDOWN FUNCIONAL ***
     bindEvents: function() {
+        // Limpiar eventos anteriores
+        this.unbindEvents();
+
         // Selector de año
         const yearSelector = document.getElementById('ganttYearSelector');
         if (yearSelector) {
@@ -452,6 +459,184 @@ const GanttChart = {
                 this.render();
             });
         });
+
+        // *** DROPDOWN DE DEPARTAMENTOS FUNCIONAL ***
+        const departmentToggle = document.getElementById('departmentToggle');
+        const selectorDropdown = document.getElementById('selectorDropdown');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+
+        // Toggle dropdown
+        if (departmentToggle) {
+            departmentToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectorDropdown.classList.toggle('show');
+                
+                // Actualizar flecha
+                const arrow = departmentToggle.querySelector('.arrow');
+                if (arrow) {
+                    arrow.style.transform = selectorDropdown.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            });
+        }
+
+        // Seleccionar todos
+        if (selectAllBtn) {
+            selectAllBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.selectAllDepartments();
+            });
+        }
+
+        // Limpiar todos
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.clearAllDepartments();
+            });
+        }
+
+        // Checkboxes de departamentos
+        const checkboxes = document.querySelectorAll('#selectorDropdown input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                this.handleDepartmentChange(e.target);
+            });
+        });
+
+        // Option items clickables
+        const optionItems = document.querySelectorAll('.option-item');
+        optionItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (e.target.type !== 'checkbox' && !e.target.closest('button')) {
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        this.handleDepartmentChange(checkbox);
+                    }
+                }
+            });
+        });
+
+        // Cerrar dropdown al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.department-selector-inline')) {
+                if (selectorDropdown && selectorDropdown.classList.contains('show')) {
+                    selectorDropdown.classList.remove('show');
+                    const arrow = departmentToggle?.querySelector('.arrow');
+                    if (arrow) arrow.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
+    },
+
+    unbindEvents: function() {
+        // Remover event listeners previos si existen
+        const elements = ['ganttYearSelector', 'ganttQuarterSelector', 'departmentToggle', 'selectAllBtn', 'clearAllBtn'];
+        elements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.replaceWith(el.cloneNode(true));
+            }
+        });
+    },
+
+    // *** FUNCIONES DE MANEJO DE DEPARTAMENTOS ***
+    selectAllDepartments: function() {
+        const checkboxes = document.querySelectorAll('#selectorDropdown input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+            cb.checked = true;
+            const optionItem = cb.closest('.option-item');
+            if (optionItem) {
+                optionItem.classList.add('selected');
+            }
+        });
+
+        // Actualizar filtros
+        NetberryUtils.activeFilters = ['all'];
+        this.updateSelectorDisplay();
+        this.applyFilters();
+    },
+
+    clearAllDepartments: function() {
+        const checkboxes = document.querySelectorAll('#selectorDropdown input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+            cb.checked = false;
+            const optionItem = cb.closest('.option-item');
+            if (optionItem) {
+                optionItem.classList.remove('selected');
+            }
+        });
+
+        // Actualizar filtros
+        NetberryUtils.activeFilters = [];
+        this.updateSelectorDisplay();
+        this.applyFilters();
+    },
+
+    handleDepartmentChange: function(checkbox) {
+        const value = checkbox.value;
+        const optionItem = checkbox.closest('.option-item');
+        
+        if (checkbox.checked) {
+            if (optionItem) optionItem.classList.add('selected');
+            
+            // Agregar departamento a filtros activos
+            if (!NetberryUtils.activeFilters.includes(value) && !NetberryUtils.activeFilters.includes('all')) {
+                NetberryUtils.activeFilters.push(value);
+            }
+            
+            // Si todos están seleccionados, cambiar a 'all'
+            const allDepts = Object.keys(NetberryData.departments);
+            if (NetberryUtils.activeFilters.length === allDepts.length) {
+                NetberryUtils.activeFilters = ['all'];
+            }
+        } else {
+            if (optionItem) optionItem.classList.remove('selected');
+            
+            // Si estaba en modo 'all', cambiar a lista específica
+            if (NetberryUtils.activeFilters.includes('all')) {
+                NetberryUtils.activeFilters = Object.keys(NetberryData.departments).filter(key => key !== value);
+            } else {
+                // Remover departamento específico
+                NetberryUtils.activeFilters = NetberryUtils.activeFilters.filter(dept => dept !== value);
+            }
+        }
+
+        this.updateSelectorDisplay();
+        this.applyFilters();
+    },
+
+    updateSelectorDisplay: function() {
+        const selectedCountElement = document.getElementById('selectedCount');
+        if (!selectedCountElement) return;
+
+        const allDepts = Object.keys(NetberryData.departments);
+        const isAllSelected = NetberryUtils.activeFilters.includes('all');
+        const selectedCount = isAllSelected ? allDepts.length : NetberryUtils.activeFilters.length;
+
+        let displayText;
+        if (selectedCount === 0) {
+            displayText = 'Ninguno';
+        } else if (isAllSelected || selectedCount === allDepts.length) {
+            displayText = `Todos (${allDepts.length})`;
+        } else {
+            displayText = `${selectedCount} seleccionados`;
+        }
+
+        selectedCountElement.textContent = displayText;
+    },
+
+    applyFilters: function() {
+        console.log('🔄 Aplicando filtros:', NetberryUtils.activeFilters);
+        
+        // Actualizar todos los componentes
+        if (typeof NetberryComponents !== 'undefined') {
+            NetberryComponents.updateAll();
+        }
+        
+        // Re-renderizar el Gantt con los nuevos filtros
+        this.render();
     },
 
     openProjectModal: function(projectId) {
@@ -538,6 +723,33 @@ const GanttChart = {
         this.render();
     }
 };
+
+// Funciones globales para compatibilidad (CORREGIDAS)
+function toggleDepartmentDropdown() {
+    const dropdown = document.getElementById('selectorDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+        
+        // Actualizar flecha
+        const toggle = document.getElementById('departmentToggle');
+        const arrow = toggle?.querySelector('.arrow');
+        if (arrow) {
+            arrow.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+    }
+}
+
+function selectAllDepartments() {
+    if (window.GanttChart) {
+        GanttChart.selectAllDepartments();
+    }
+}
+
+function clearAllDepartments() {
+    if (window.GanttChart) {
+        GanttChart.clearAllDepartments();
+    }
+}
 
 // Exportar para uso global
 window.GanttChart = GanttChart;
