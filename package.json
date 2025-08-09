@@ -4,9 +4,11 @@
   "description": "Netberry Capacity Planner - Dashboard web PMO para gestión inteligente de recursos y planificación de proyectos",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "clear-port": "node scripts/clear-port.js",
+    "predev": "npm run clear-port",
+    "dev": "vite --port 3000 --strictPort",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --port 3000 --strictPort",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{js,jsx,css,html}\""
   },

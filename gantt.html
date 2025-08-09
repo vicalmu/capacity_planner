@@ -161,12 +161,15 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Core dependencies -->
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/gantt/gantt_chart.js"></script>
-    <script src="js/simulator/simulator_domino.js"></script>
+    
+    <!-- Components and controllers -->
     <script src="js/components_main.js"></script>
+    <script src="js/gantt/gantt_chart.js"></script>
     <script src="js/gantt/gantt_controller.js"></script>
+    <script src="js/simulator/simulator_domino.js"></script>
 
     <script>
         // Variables globales
@@ -458,53 +461,113 @@ window.addEventListener('resize', function() {
                 NetberryData.config.selectedQuarter = 'Q1';
             }
 
-            // Inicialización con delay para asegurar que todos los scripts se carguen
-            setTimeout(() => {
-                try {
-                    // Inicializar componentes principales
-                    if (typeof NetberryComponents !== 'undefined' && NetberryComponents.init) {
-                        console.log('📦 Inicializando NetberryComponents...');
-                        NetberryComponents.init();
-                    }
+            // Sistema de inicialización con retry
+            const GanttInitializer = {
+                maxRetries: 5,
+                retryDelay: 200,
+                retryCount: 0,
+                
+                // Verificar dependencias con logs detallados
+                checkDependencies() {
+                    const dependencies = {
+                        'NetberryData': window.NetberryData,
+                        'NetberryUtils': window.NetberryUtils,
+                        'NetberryComponents': window.NetberryComponents,
+                        'GanttChart': window.GanttChart,
+                        'GanttMode': window.GanttMode
+                    };
                     
-                    // Inicializar Gantt Chart
-                    if (typeof GanttChart !== 'undefined' && GanttChart.render) {
-                        console.log('📊 Renderizando GanttChart...');
-                        GanttChart.render();
-                    } else {
-                        console.warn('⚠️ GanttChart no disponible');
-                        // Mostrar mensaje de error en el contenedor
-                        const ganttContainer = document.getElementById('ganttChart');
-                        if (ganttContainer) {
-                            ganttContainer.innerHTML = `
-                                <div style="text-align: center; padding: 40px; color: #ef4444;">
-                                    <h3>❌ Error al cargar Gantt Chart</h3>
-                                    <p>Verifica que el archivo gantt_chart.js esté cargado correctamente.</p>
-                                </div>
-                            `;
+                    console.log('🔍 Verificando dependencias...');
+                    
+                    const missing = [];
+                    for (const [name, dep] of Object.entries(dependencies)) {
+                        if (!dep) {
+                            missing.push(name);
+                            console.warn(`⚠️ ${name} no está disponible`);
+                        } else {
+                            console.log(`✅ ${name} está cargado`);
                         }
                     }
                     
-                    // Inicializar GanttMode si está disponible
-                    if (typeof GanttMode !== 'undefined' && GanttMode.init) {
-                        console.log('🎮 Inicializando GanttMode...');
-                        GanttMode.init();
+                    if (missing.length > 0) {
+                        console.warn(`❌ Dependencias faltantes: ${missing.join(', ')}`);
+                        return false;
                     }
                     
-                    // Inicializar display del selector
-                    updateSelectorDisplay();
+                    return true;
+                },
+                
+                // Inicialización con manejo de errores mejorado
+                async initialize() {
+                    try {
+                        console.log(`🔄 Intento de inicialización #${this.retryCount + 1}`);
+                        
+                        // Verificar dependencias
+                        if (!this.checkDependencies()) {
+                            throw new Error('Dependencias incompletas');
+                        }
+                        
+                        // Asegurar que el contenedor existe
+                        const container = document.getElementById('ganttChart');
+                        if (!container) {
+                            throw new Error('Contenedor del Gantt no encontrado');
+                        }
+                        
+                        // Inicializar componentes en orden
+                        console.log('1️⃣ Inicializando NetberryComponents...');
+                        await this.safeInitialize(() => NetberryComponents.init());
+                        
+                        console.log('2️⃣ Renderizando GanttChart...');
+                        await this.safeInitialize(() => GanttChart.render());
+                        
+                        console.log('3️⃣ Inicializando GanttMode...');
+                        await this.safeInitialize(() => GanttMode.init());
+                        
+                        console.log('4️⃣ Actualizando selector...');
+                        updateSelectorDisplay();
+                        
+                        console.log('✅ Inicialización completada con éxito');
+                        return true;
+                        
+                    } catch (error) {
+                        console.error(`❌ Error en intento #${this.retryCount + 1}:`, error);
+                        
+                        if (this.retryCount < this.maxRetries) {
+                            this.retryCount++;
+                            console.log(`⏳ Reintentando en ${this.retryDelay}ms...`);
+                            await new Promise(resolve => setTimeout(resolve, this.retryDelay));
+                            return this.initialize();
+                        } else {
+                            this.showError(error);
+                            return false;
+                        }
+                    }
+                },
+                
+                // Inicialización segura de componentes
+                async safeInitialize(initFn) {
+                    try {
+                        const result = initFn();
+                        if (result instanceof Promise) {
+                            await result;
+                        }
+                    } catch (error) {
+                        console.error('Error en inicialización:', error);
+                        throw error;
+                    }
+                },
+                
+                // Mostrar error en la UI
+                showError(error) {
+                    console.error('❌ Error fatal después de', this.maxRetries, 'intentos:', error);
                     
-                    console.log('✅ Inicialización completa');
-                } catch (error) {
-                    console.error('❌ Error durante la inicialización:', error);
-                    
-                    // Mostrar error en pantalla
-                    const ganttContainer = document.getElementById('ganttChart');
-                    if (ganttContainer) {
-                        ganttContainer.innerHTML = `
+                    const container = document.getElementById('ganttChart');
+                    if (container) {
+                        container.innerHTML = `
                             <div style="text-align: center; padding: 40px; color: #ef4444;">
                                 <h3>❌ Error de Inicialización</h3>
-                                <p>${error.message}</p>
+                                <p>No se pudo inicializar después de ${this.maxRetries} intentos.</p>
+                                <p>Error: ${error.message}</p>
                                 <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
                                     🔄 Recargar Página
                                 </button>
@@ -512,7 +575,14 @@ window.addEventListener('resize', function() {
                         `;
                     }
                 }
-            }, 300);
+            };
+
+            // Iniciar el proceso cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => GanttInitializer.initialize());
+            } else {
+                GanttInitializer.initialize();
+            }
         });
 
         // Funciones de debug

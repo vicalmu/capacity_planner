@@ -1,0 +1,132 @@
+/* Main Styles */
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+.landing-content {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+}
+
+.main-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: -0.025em;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Mode Cards */
+.mode-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.mode-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.mode-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.mode-icon {
+    background: rgba(66, 153, 225, 0.1);
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+}
+
+.mode-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+}
+
+.mode-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Feature Tags */
+.mode-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: auto;
+}
+
+.feature-tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.feature-tag.blue {
+    background: var(--tag-blue-bg);
+    color: var(--tag-blue-text);
+}
+
+.feature-tag.green {
+    background: var(--tag-green-bg);
+    color: var(--tag-green-text);
+}
+
+.feature-tag.red {
+    background: var(--tag-red-bg);
+    color: var(--tag-red-text);
+}
+
+/* Icons */
+.icon-gantt, .icon-projects, .icon-simulator {
+    width: 32px;
+    height: 32px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .app-container {
+        padding: var(--spacing-md);
+    }
+    
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .mode-cards {
+        grid-template-columns: 1fr;
+    }
+}

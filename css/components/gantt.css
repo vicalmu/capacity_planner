@@ -1,0 +1,115 @@
+.gantt-container {
+    padding: 2rem;
+    background: var(--color-background);
+}
+
+.gantt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.gantt-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-text);
+}
+
+.gantt-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.gantt-button {
+    padding: 0.5rem 1rem;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.gantt-button:hover {
+    background: var(--color-primary-hover);
+}
+
+.gantt-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.gantt-sidebar {
+    background: var(--color-background-alt);
+    padding: 1rem;
+    border-right: 1px solid var(--color-border);
+}
+
+.gantt-timeline {
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.gantt-row {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.gantt-row:last-child {
+    border-bottom: none;
+}
+
+.gantt-task {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: var(--font-size-sm);
+}
+
+/* Estilos para la barra de herramientas */
+.gantt-toolbar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--color-background-alt);
+    border-radius: 0.5rem;
+}
+
+.gantt-toolbar__group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.gantt-toolbar__separator {
+    width: 1px;
+    height: 24px;
+    background: var(--color-border);
+    margin: 0 0.5rem;
+}
+
+/* Estilos para el zoom */
+.gantt-zoom {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.gantt-zoom__button {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.gantt-zoom__button:hover {
+    background: var(--color-background-hover);
+}

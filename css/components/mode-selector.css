@@ -1,0 +1,58 @@
+/* Mode Selector Styles */
+.mode-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mode-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background: var(--color-background-alt);
+    border: 2px solid var(--color-border);
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-height: 300px;
+}
+
+.mode-button:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+}
+
+.mode-button__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.mode-button__title {
+    font-size: var(--font-size-xl);
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.mode-button__description {
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    line-height: var(--line-height-relaxed);
+    margin: 0;
+}
+
+/* Active state */
+.mode-button.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.mode-button.active .mode-button__title,
+.mode-button.active .mode-button__description {
+    color: var(--color-text-inverse);
+}

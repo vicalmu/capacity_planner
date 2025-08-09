@@ -1,0 +1,23 @@
+.nav {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav__button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    background: var(--color-background-alt);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.nav__button:hover {
+    background: var(--color-background-hover);
+}
+
+.nav__button.active {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+}

@@ -4,81 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capacity Planner Netberry</title>
-    <link rel="stylesheet" href="css/home_styles.css">
+    <link rel="stylesheet" href="/css/base/reset.css">
+    <link rel="stylesheet" href="/css/base/typography.css">
+    <link rel="stylesheet" href="/css/base/variables.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <!-- Background Effects -->
-    <div class="bg-shapes">
-        <div class="bg-shape"></div>
-        <div class="bg-shape"></div>
-        <div class="bg-shape"></div>
+    <div class="app-container">
+        <main class="landing-content">
+            <h1 class="main-title">Capacity Planner Netberry</h1>
+            <p class="subtitle">Selecciona tu modo de trabajo para optimizar la gestión de recursos</p>
+
+            <div class="mode-cards">
+                <a href="/gantt.html" class="mode-card">
+                    <div class="mode-icon">
+                        <img src="/public/assets/gantt-icon.svg" alt="Gantt" class="icon-gantt">
+                    </div>
+                    <h2>Modo Gantt</h2>
+                    <p class="mode-description">Visualiza la capacidad departamental fusionada con la timeline de proyectos en una vista única y poderosa.</p>
+                    <div class="mode-features">
+                        <span class="feature-tag blue">Timeline Fusionada</span>
+                        <span class="feature-tag blue">Capacidad en Tiempo Real</span>
+                        <span class="feature-tag blue">Alertas Inteligentes</span>
+                    </div>
+                </a>
+
+                <a href="/projects.html" class="mode-card">
+                    <div class="mode-icon">
+                        <img src="/public/assets/projects-icon.svg" alt="Proyectos" class="icon-projects">
+                    </div>
+                    <h2>Modo Proyectos</h2>
+                    <p class="mode-description">Gestiona tu portfolio completo con CRUD avanzado, filtros multi-departamento y vista Kanban moderna.</p>
+                    <div class="mode-features">
+                        <span class="feature-tag green">CRUD Completo</span>
+                        <span class="feature-tag green">Vista Kanban</span>
+                        <span class="feature-tag green">Templates Inteligentes</span>
+                    </div>
+                </a>
+
+                <a href="/simulator.html" class="mode-card">
+                    <div class="mode-icon">
+                        <img src="/public/assets/simulator-icon.svg" alt="Simulador" class="icon-simulator">
+                    </div>
+                    <h2>Simulador de Proyectos</h2>
+                    <p class="mode-description">Analiza el impacto temporal con efecto dominó y obtén recomendaciones automáticas para la toma de decisiones.</p>
+                    <div class="mode-features">
+                        <span class="feature-tag red">Efecto Dominó</span>
+                        <span class="feature-tag red">Análisis de Riesgo</span>
+                        <span class="feature-tag red">IA Predictiva</span>
+                    </div>
+                </a>
+            </div>
+        </main>
     </div>
-
-    <!-- Health Indicator -->
-    <div class="health-indicator">
-        <div class="health-score" id="healthScore">87</div>
-        <div class="health-label">Health Score</div>
-    </div>
-
-    <!-- Main Container -->
-    <div class="home-container">
-        <h1 class="main-title">Capacity Planner Netberry</h1>
-        <p class="main-subtitle">Selecciona tu modo de trabajo para optimizar la gestión de recursos</p>
-
-        <!-- Modes Grid -->
-        <div class="modes-grid">
-            <!-- Modo Gantt -->
-            <div class="mode-card gantt" onclick="selectMode('gantt')">
-                <div class="mode-icon">📊</div>
-                <h2 class="mode-title">Modo Gantt</h2>
-                <p class="mode-description">
-                    Visualiza la capacidad departamental fusionada con la timeline de proyectos en una vista única y poderosa.
-                </p>
-                <div class="mode-features">
-                    <span class="feature-tag">Timeline Fusionada</span>
-                    <span class="feature-tag">Capacidad en Tiempo Real</span>
-                    <span class="feature-tag">Alertas Inteligentes</span>
-                </div>
-            </div>
-
-            <!-- Modo Proyectos -->
-            <div class="mode-card projects" onclick="selectMode('projects')">
-                <div class="mode-icon">📋</div>
-                <h2 class="mode-title">Modo Proyectos</h2>
-                <p class="mode-description">
-                    Gestiona tu portfolio completo con CRUD avanzado, filtros multi-departamento y vista Kanban moderna.
-                </p>
-                <div class="mode-features">
-                    <span class="feature-tag">CRUD Completo</span>
-                    <span class="feature-tag">Vista Kanban</span>
-                    <span class="feature-tag">Templates Inteligentes</span>
-                </div>
-            </div>
-
-            <!-- Modo Simulador -->
-            <div class="mode-card simulator" onclick="selectMode('simulator')">
-                <div class="mode-icon">⚡</div>
-                <h2 class="mode-title">Simulador de Proyectos</h2>
-                <p class="mode-description">
-                    Analiza el impacto temporal con efecto dominó y obtén recomendaciones automáticas para la toma de decisiones.
-                </p>
-                <div class="mode-features">
-                    <span class="feature-tag">Efecto Dominó</span>
-                    <span class="feature-tag">Análisis de Riesgo</span>
-                    <span class="feature-tag">IA Predictiva</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Countdown Auto-redirect -->
-        <div class="countdown-container" id="countdownContainer">
-            <div class="countdown-text">Auto-redirigiendo al Modo Gantt en:</div>
-            <div class="countdown-circle">
-                <span id="countdownNumber">3</span>
-            </div>
-        </div>
-    </div>
-
-    <script src="js/home_controller.js"></script>
+    <script type="module" src="/js/main.js"></script>
 </body>
 </html>

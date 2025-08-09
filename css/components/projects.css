@@ -1,0 +1,227 @@
+/* Estilos del componente Projects */
+
+.projects {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: var(--spacing-lg);
+    height: 100%;
+    padding: var(--spacing-md);
+}
+
+/* Controles */
+.projects__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.projects__new-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.projects__new-btn:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.projects__filters {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.projects__filter-select {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Lista de proyectos */
+.projects__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+    overflow-y: auto;
+}
+
+/* Tarjeta de proyecto */
+.project-card {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.project-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.project-card__title {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.project-card__status {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9em;
+    text-transform: capitalize;
+}
+
+.project-card--en-progreso .project-card__status {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.project-card--completado .project-card__status {
+    background-color: var(--color-success);
+    color: white;
+}
+
+.project-card--en-riesgo .project-card__status {
+    background-color: var(--color-warning);
+    color: white;
+}
+
+/* Barra de progreso */
+.progress-bar {
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    margin: var(--spacing-sm) 0;
+}
+
+.progress-bar__fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    transition: width var(--transition-normal);
+}
+
+.progress-bar__text {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+/* Detalles del proyecto */
+.project-details {
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+}
+
+.project-details__title {
+    margin: 0 0 var(--spacing-md);
+    font-size: 1.5em;
+}
+
+.project-details__status {
+    margin-bottom: var(--spacing-lg);
+}
+
+.project-details__dates {
+    margin-bottom: var(--spacing-lg);
+}
+
+.project-details__departments {
+    margin-bottom: var(--spacing-lg);
+}
+
+.project-details__departments ul {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-sm) 0;
+}
+
+.project-details__departments li {
+    padding: var(--spacing-xs) 0;
+}
+
+.project-details__actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+/* Formulario */
+.project-form {
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.form-group select[multiple] {
+    height: 120px;
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.btn--edit {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn--edit:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn--delete {
+    background-color: var(--color-error);
+    color: white;
+}
+
+.btn--delete:hover {
+    background-color: #dc2626;
+}
