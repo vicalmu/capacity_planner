@@ -1,0 +1,23 @@
+{
+  "name": "capacity-planner",
+  "version": "1.0.0",
+  "description": "Netberry Capacity Planner - Dashboard web PMO para gestión inteligente de recursos y planificación de proyectos",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{js,jsx,css,html}\""
+  },
+  "dependencies": {
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.16"
+  }
+}

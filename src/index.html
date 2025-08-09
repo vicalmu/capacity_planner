@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Netberry Capacity Planner - Gestión inteligente de recursos y planificación de proyectos">
+    <title>Netberry Capacity Planner</title>
+    <link rel="stylesheet" href="./styles/main.css">
+    <script type="module" src="./js/main.js"></script>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav__logo">Netberry Capacity Planner</div>
+            <div class="nav__menu">
+                <button class="nav__button" data-view="gantt">Modo Gantt</button>
+                <button class="nav__button" data-view="projects">Modo Proyectos</button>
+                <button class="nav__button" data-view="simulator">Modo Simulador</button>
+            </div>
+            <div class="nav__actions">
+                <button class="theme-toggle" aria-label="Cambiar tema">🌓</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div id="gantt-view" class="view" role="region" aria-label="Vista Gantt">
+            <!-- El contenido se cargará dinámicamente -->
+        </div>
+        <div id="projects-view" class="view" role="region" aria-label="Vista Proyectos" hidden>
+            <!-- El contenido se cargará dinámicamente -->
+        </div>
+        <div id="simulator-view" class="view" role="region" aria-label="Vista Simulador" hidden>
+            <!-- El contenido se cargará dinámicamente -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Netberry Capacity Planner</p>
+    </footer>
+</body>
+</html>
